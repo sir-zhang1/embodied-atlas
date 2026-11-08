@@ -4,7 +4,7 @@
 
 ## 当前可运行范围
 
-`sources.json` 中有 5 个官方公开端点：arXiv cs.RO 最近 30 篇、4 篇基础工作的版本核查、arXiv cs.RO RSS、LeRobot 最近 5 次代码发行、OpenVLA 模型仓库元数据。第一批实际入库 40 条资料，二次联网采集仍为 40 条。RSS 这次合法返回 0 条，保存为 `no_change`；最初沙箱 DNS 失败也保留在运行历史中，未篡改为成功。详细 HTTP 状态、时间、响应哈希和检查项见 `verification.json`。
+`sources.json` 现有 6 个官方公开端点：arXiv cs.RO 最近 30 篇、4 篇基础工作的版本核查、arXiv cs.RO RSS、LeRobot 最近 5 次代码发行、OpenVLA 模型仓库元数据，以及 NVIDIA Robotics 企业动态 RSS。前 5 个来源第一批实际入库 40 条资料，二次联网采集仍为 40 条。arXiv RSS 这次合法返回 0 条，保存为 `no_change`；最初沙箱 DNS 失败也保留在运行历史中，未篡改为成功。新增 NVIDIA 源的本机请求遇到 TLS EOF，已保存 `failed`，当前没有该源入库条目；后续云端应实际重查，不能视为已经可用。前 5 源的详细 HTTP 状态、时间、响应哈希和检查项见 `verification.json`；最新状态由 `cli.py check` 与 `public-feed.json` 提供。
 
 这是有明确数量上限的真实采集验收，不声称已覆盖全部机器人研究。当前没有跨页回补：若两次检查之间超过 30 篇新提交，可能漏收；常规查询按 submittedDate 排序，旧论文新版仅在返回窗口或基础工作清单中被发现。正式每日运行前要增加按时间游标分页、旧文版本补查和异常告警。近期条目、历史基础工作与模型仓库日期在导出中明确区分。
 

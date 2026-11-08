@@ -24,8 +24,8 @@
     },
     {
       "path": "app/app.js",
-      "bytes": 41862,
-      "sha256": "8119411387850e6ad61d0ca6062f07be01bdac099f399884042167c32467c134"
+      "bytes": 41987,
+      "sha256": "a546d212fb12ed338c6cf9887ddf41ff3e25419802fb0cd441915025b2b38794"
     },
     {
       "path": "app/index.html",
@@ -39,8 +39,8 @@
     },
     {
       "path": "app/styles.css",
-      "bytes": 21226,
-      "sha256": "0b52a3b8fd68f0ed51aae92ad43ec01a6e6fcbe26af4e0765baaab83e2ac0937"
+      "bytes": 21353,
+      "sha256": "71ed40fbc8bb6d629b8db0a3b54547cd19c6e270ddd69e519488e61678141943"
     },
     {
       "path": "content/abstract-briefs.json",
@@ -64,8 +64,8 @@
     },
     {
       "path": "pipeline/README.md",
-      "bytes": 9235,
-      "sha256": "0b46054469f8b85f8b98315d72657525466b220ff880df9696250fcce08ed805"
+      "bytes": 9533,
+      "sha256": "a53df1a76dcdb5eb435448cc7b6d7dd3581139f299b3d577ed80c76072a6ec5a"
     },
     {
       "path": "pipeline/aihot-source-template.json",
@@ -74,13 +74,13 @@
     },
     {
       "path": "pipeline/bootstrap-state.json",
-      "bytes": 386637,
-      "sha256": "dac0b14c44469ced88ef2e143a082d3a7d53f9a579814fe1ca70c0ade0872a7d"
+      "bytes": 387194,
+      "sha256": "1442ec1429e50d8015c87981cd8682635f2a9bec425ef721fbee05bc1dc1ab79"
     },
     {
       "path": "pipeline/cli.py",
-      "bytes": 29236,
-      "sha256": "5b6286f5ff46ec18e5c7e5c9660827879a01df906c7aa7740af745fb2215202f"
+      "bytes": 31076,
+      "sha256": "d1359b41f9785eaee3effed4a61cb94f122b9a169f1bbfc71ba24cf8ee894059"
     },
     {
       "path": "pipeline/editorial-overrides.json",
@@ -89,8 +89,13 @@
     },
     {
       "path": "pipeline/sources.json",
-      "bytes": 909,
-      "sha256": "2745e3ba8ac84a8a3f811f6a35b8c0116a654f5bbde6c8645e2f7e15b63edde8"
+      "bytes": 1077,
+      "sha256": "eb8c2cc0f4fe8652b20a4bb8addf7dc439593178eb45b3adcd4262564bd78092"
+    },
+    {
+      "path": "pipeline/test_company.py",
+      "bytes": 3630,
+      "sha256": "f047f8ca6bfdaede38501c331e98a5b8b22b019d16579f1d277b3334f84a1d96"
     },
     {
       "path": "pipeline/test_pipeline.py",
@@ -114,8 +119,8 @@
     },
     {
       "path": "scripts/stage_public_repo.py",
-      "bytes": 4137,
-      "sha256": "0e11fe9d9f1c77ac1deaa51eac4341e583990cba05009b27c51e86e09f5777bc"
+      "bytes": 4164,
+      "sha256": "a93ac851cae20642806a2095f96697184ac295d17632601a4fdf16ec46fa93e9"
     },
     {
       "path": "scripts/test_cloud.py",

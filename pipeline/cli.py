@@ -2,6 +2,7 @@
 """Zero-model, standard-library research metadata adapter; no cloud is configured."""
 import argparse
 import datetime as dt
+from email.utils import parsedate_to_datetime
 import hashlib
 import html
 from html.parser import HTMLParser
@@ -22,12 +23,13 @@ ROOT = BASE.parent
 DEFAULT_DB = BASE / ".data" / "research.sqlite"
 MAX_BYTES = 3_000_000
 MAX_ITEMS = 200
-HOSTS = {"export.arxiv.org", "rss.arxiv.org", "api.github.com", "huggingface.co"}
+HOSTS = {"export.arxiv.org", "rss.arxiv.org", "api.github.com", "huggingface.co", "blogs.nvidia.com"}
 LINK_HOSTS = HOSTS | {"arxiv.org", "github.com", "doi.org"}
 ALLOWED_PATHS = {
     "export.arxiv.org": {"/api/query"}, "rss.arxiv.org": {"/rss/cs.RO"},
     "api.github.com": {"/repos/huggingface/lerobot/releases"},
     "huggingface.co": {"/api/models/openvla/openvla-7b"},
+    "blogs.nvidia.com": {"/blog/category/robotics/feed/"},
 }
 # Reuse the first-phase official-source validators, without editing or executing its main().
 spec = importlib.util.spec_from_file_location("source_checks", ROOT / "核查/check_public_sources.py")
@@ -153,6 +155,30 @@ def parse(source, raw):
             result.append(paper_record(text_of(item, "title"), text_of(item, "description"), aid, version,
                 feed_announced_at=text_of(item, "pubDate"),
                 date_note="RSS announcement is not the original submission date; API verification is pending."))
+    elif kind == "company_rss":
+        root = ET.fromstring(raw)
+        if root.tag != "rss" or root.find("channel") is None:
+            raise ValueError("Expected a company RSS feed")
+        for item in root.findall("./channel/item")[:10]:
+            url = valid_url(text_of(item, "link"))
+            link = urllib.parse.urlsplit(url)
+            if link.hostname != "blogs.nvidia.com" or not link.path.startswith("/blog/") or link.query or link.fragment:
+                raise ValueError("Company article must link directly to the configured official blog")
+            try:
+                published = parsedate_to_datetime(text_of(item, "pubDate"))
+            except (TypeError, ValueError) as error:
+                raise ValueError("Company publication date is missing or invalid") from error
+            if published.tzinfo is None:
+                raise ValueError("Company publication date must include a timezone")
+            title = plain(text_of(item, "title"), 1000)
+            result.append({"kind": "company_announcement", "title": title, "title_en": title,
+                "url": url, "summary": plain(text_of(item, "description")),
+                "identifiers": {"company_article": url}, "arxiv_id": None, "doi": None,
+                "version": None, "published_at": published.astimezone(dt.timezone.utc).isoformat(),
+                "version_updated_at": None, "publication_date_basis": "company_rss_pubdate",
+                "evidence_scope": "official_company_rss_excerpt_only",
+                "claims_status": "vendor_claims_not_independently_verified",
+                "date_note": "日期来自企业官方 RSS 的 pubDate，不代表独立研究验证或本站入库日期。"})
     elif kind == "github":
         checks.parse_github(raw)
         for item in json.loads(raw)[:MAX_ITEMS]:

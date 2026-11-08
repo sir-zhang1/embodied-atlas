@@ -444,6 +444,21 @@
         "started_at": "2026-11-08T06:24:26.569673+00:00",
         "status": "no_change",
         "url": "https://huggingface.co/api/models/openvla/openvla-7b"
+      },
+      {
+        "changed_records": 0,
+        "error": "URLError: <urlopen error EOF occurred in violation of protocol (_ssl.c:1129)>",
+        "finished_at": "2026-11-08T06:40:11.288128+00:00",
+        "http_status": null,
+        "id": 16,
+        "items_seen": 0,
+        "new_versions": 0,
+        "new_works": 0,
+        "response_sha256": null,
+        "source_id": "nvidia_robotics",
+        "started_at": "2026-11-08T06:40:11.191529+00:00",
+        "status": "failed",
+        "url": "https://blogs.nvidia.com/blog/category/robotics/feed/"
       }
     ],
     "version_changes": [],

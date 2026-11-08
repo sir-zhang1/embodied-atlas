@@ -10,3 +10,5 @@ input::placeholder,textarea::placeholder{color:#6d7778}.news-original,.time-labe
 input::placeholder,textarea::placeholder{color:var(--muted)}.map-caption-label,.map-feedback,.map-help{color:#647267}.node-update{color:#8c5b35}.type-label.review{color:#855b36}.reader .kind{color:#526d56}.reader .kind.analysis{color:#855b36}.footer{color:#66736a}
 
 .node-update:not(.has-new){color:var(--muted)}.node-update:not(.has-new):before{display:none}
+
+.source-error{display:block;max-width:260px;font-size:11px;color:#985548;overflow-wrap:anywhere}.reader .lead{font-size:19px}
