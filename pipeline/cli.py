@@ -187,6 +187,8 @@ def parse_crossref(source, raw):
         if record.get("type")!="journal-article":
             continue
         title=plain(" ".join(record.get("title",[])),1000)
+        if re.fullmatch(r"front cover|back cover|cover image|editorial board|table of contents|contents|index|masthead",title.strip(),re.I):
+            continue
         abstract=plain(record.get("abstract"))
         text=(title+" "+abstract).lower()
         if source["scope"]=="cross" and not EMBODIED_TERMS.search(text):
@@ -339,19 +341,25 @@ def parse(source, raw):
 
 # Transparent lexical routing: these rules are not a measure of scientific quality.
 RULES = {
+    "morphology_design": ("soft robot", "soft robotics", "soft robotic", "continuum robot", "origami", "morphology", "morphological", "bioinspired", "bio-inspired", "mechanism design"),
+    "actuation": ("actuator", "actuators", "actuation", "pneumatic", "piezoelectric", "motor drive"),
+    "tactile_sensors": ("tactile sensor", "tactile sensors", "pressure sensor", "pressure sensors", "electronic skin", "e-skin", "force sensor", "force sensors"),
+    "sensor_calibration": ("calibration", "synchronization"),
+    "intent_communication": ("haptic", "haptics", "vibrotactile", "force feedback", "brain-computer", "human-machine", "human machine"),
+    "shared_autonomy": ("shared autonomy", "shared control", "teleoperated", "teleoperation"),
     "tactile_perception": ("tactile", "touch sensing", "触觉"),
     "multimodal_fusion": ("multimodal", "multi-modal", "visuo-tactile", "多模态"),
-    "visual_perception": ("visual perception", "object detection", "3d perception", "pose estimation"),
-    "state_estimation": ("state estimation", "kalman", "localization"),
+    "visual_perception": ("visual perception", "object detection", "3d perception", "pose estimation", "computer vision", "3d reconstruction", "visual servoing"),
+    "state_estimation": ("state estimation", "kalman", "localization", "odometry", "state estimator"),
     "spatial_mapping": ("slam", "mapping", "spatial memory"),
     "predictive_dynamics": ("world model", "dynamics model", "predictive model"),
     "task_decomposition": ("task planning", "long-horizon", "task decomposition"),
-    "navigation_planning": ("navigation", "path planning", "motion planning"),
+    "navigation_planning": ("navigation", "path planning", "motion planning", "collision avoidance", "trajectory planning", "motion generation"),
     "language_grounding": ("language instruction", "language grounding"),
     "locomotion": ("locomotion", "legged", "quadruped", "humanoid"),
-    "dexterous_manipulation": ("manipulation", "grasp", "dexterous"),
-    "contact_control": ("contact-rich", "force control", "impedance"),
-    "feedback_control": ("model predictive control", "mpc", "optimal control"),
+    "dexterous_manipulation": ("manipulation", "manipulator", "manipulators", "grasp", "grasping", "grasps", "dexterous", "gripper", "grippers", "robotic hand", "robot hand"),
+    "contact_control": ("contact-rich", "force control", "impedance", "admittance", "compliant control", "compliance"),
+    "feedback_control": ("model predictive control", "mpc", "optimal control", "feedback control", "adaptive control", "robust control", "tracking control", "trajectory tracking", "motion control", "sliding mode", "nonlinear control", "stability", "stabilization"),
     "imitation_learning": ("imitation learning", "behavior cloning", "behaviour cloning"),
     "reinforcement_learning": ("reinforcement learning",),
     "self_supervised": ("self-supervised", "self supervised"),

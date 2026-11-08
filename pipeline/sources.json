@@ -302,7 +302,7 @@
     "priority": 50,
     "journal_id": "cyborg_bionic",
     "issn": "2692-7632",
-    "scope": "robotics",
+    "scope": "cross",
     "initial_lookback_days": 180
   }
 ]

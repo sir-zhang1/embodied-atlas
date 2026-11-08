@@ -1073,11 +1073,11 @@
       "id": "cyborg_bionic",
       "name": "Cyborg and Bionic Systems",
       "issn": "2692-7632",
-      "group": "robotics",
+      "group": "cross",
       "homepage": "https://spj.science.org/journal/cbs",
       "focus": "仿生机器人、生机电融合与人机接口",
       "reading_guide": "关注生物、硬件和算法各自提供的证据及应用边界。",
-      "collection_scope": "机器人专题期刊：元数据全量主题范围",
+      "collection_scope": "跨学科期刊：仅具身、仿生机器人与身体交互相关题名/摘要",
       "initial_lookback_days": 180,
       "checked_on": "2026-11-08",
       "cas": {

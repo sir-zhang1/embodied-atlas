@@ -24,8 +24,8 @@
     },
     {
       "path": "app/app.js",
-      "bytes": 48878,
-      "sha256": "6e5092098d69dab992fc968ad3531ea88cfd321e99a676adf88461a26cff287e"
+      "bytes": 49017,
+      "sha256": "c098d2ac2ad57eba22aeee1adab2c4079d1a2616a2026520ebf40f27dc1b7a7c"
     },
     {
       "path": "app/index.html",
@@ -59,8 +59,8 @@
     },
     {
       "path": "content/journals.json",
-      "bytes": 56451,
-      "sha256": "6e3183bd3660e5ce63aae13738ed0bef2c9ea9c9b6bdd979bf0795e73ac24aa7"
+      "bytes": 56476,
+      "sha256": "d33595eeace51f5ee96d8768e85c03d85213ca3139971422ad98bb0d68319585"
     },
     {
       "path": "content/reviews.json",
@@ -84,8 +84,8 @@
     },
     {
       "path": "pipeline/cli.py",
-      "bytes": 39203,
-      "sha256": "76ea13091ac6945bf8a2c59e9c6ef13a35f305808618d339bb7ec3e7f40a5640"
+      "bytes": 40608,
+      "sha256": "6f64a49caae9580c446d94a91345852b6ebc6192e5cbf76d27195e8edb34a211"
     },
     {
       "path": "pipeline/editorial-overrides.json",
@@ -94,8 +94,8 @@
     },
     {
       "path": "pipeline/sources.json",
-      "bytes": 8742,
-      "sha256": "e18ed7eb7e2c099a4046a8527e9e9d22a24fde64c10c1db14d2f387b8af2adde"
+      "bytes": 8739,
+      "sha256": "719a0661281ba724751cab328d7094a156867ab8358d9d46e86dfee9925c4c81"
     },
     {
       "path": "pipeline/test_company.py",
@@ -104,8 +104,8 @@
     },
     {
       "path": "pipeline/test_journals.py",
-      "bytes": 6907,
-      "sha256": "deb3526fff73aadd1aa5ae1c08039ed790a90b1dbfcd5bf47964e341704a2ebd"
+      "bytes": 7915,
+      "sha256": "673c6160cafa9e13194d171faa29ff154f6fb4f364aab5ac024c186d8a105ff0"
     },
     {
       "path": "pipeline/test_pipeline.py",

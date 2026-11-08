@@ -63,6 +63,19 @@ class JournalTests(unittest.TestCase):
         self.assertEqual(result['identifiers']['arxiv'],'2401.12345')
         self.assertNotIn('arxiv',cli.parse(SOURCE,response([record()])[0])[0]['identifiers'])
 
+    def test_cover_records_and_biomedical_noise_are_excluded(self):
+        for title in ['Front Cover', 'Table of Contents', 'Editorial Board']:
+            item=record();item['title']=[title]
+            self.assertEqual(cli.parse(SOURCE,response([item])[0]),[])
+        item=record();item['title']=['Immune response in kidney disease'];item['abstract']='Cellular therapies and antibody responses.'
+        self.assertEqual(cli.parse({**SOURCE,'scope':'cross'},response([item])[0]),[])
+
+    def test_hardware_and_control_titles_link_to_map_without_abstracts(self):
+        for title,node in [('A soft pneumatic actuator','actuation'),('Adaptive control of robot manipulators','feedback_control'),('A tactile pressure sensor','tactile_sensors'),('A vibrotactile haptic interface','intent_communication')]:
+            item=record();item['title']=[title];item.pop('abstract')
+            parsed=cli.parse(SOURCE,response([item])[0])[0]
+            self.assertIn(node,cli.routing(parsed,cli.framework())[0])
+
     def test_pagination_is_not_cut_off_at_200(self):
         calls=[]
         def fetch(url):
