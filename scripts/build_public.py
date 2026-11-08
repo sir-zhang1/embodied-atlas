@@ -58,7 +58,7 @@ def make_data(root, feed_path, cloud=False):
             "run_url":f"https://github.com/{repository}/actions/runs/{run_id}",
             "checked_at":dt.datetime.now(dt.timezone.utc).isoformat(), "timezone":"Asia/Taipei", "daily_time":"07:17"}
         feed["mode"] = "github_actions_public_adapter"
-        feed["schedule_status"] = "scheduled_run_observed" if event == "schedule" else "cloud_manual_run_observed"
+        feed["schedule_status"] = "scheduled_run_observed" if event == "schedule" else ("cloud_push_run_observed" if event == "push" else "cloud_manual_run_observed")
     return data
 
 

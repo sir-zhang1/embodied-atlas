@@ -9,8 +9,8 @@
   "files": [
     {
       "path": ".github/workflows/daily-public.yml",
-      "bytes": 4293,
-      "sha256": "87db3bb55830cdab88d03ee17f122c755a0e96baee56d0102b097dde7cb5ba53"
+      "bytes": 4486,
+      "sha256": "ac3a86cfb8ff93a5e960b79f291f07b9ba58e288cb1d6cac667bfe0b867d5383"
     },
     {
       "path": ".gitignore",
@@ -24,8 +24,8 @@
     },
     {
       "path": "app/app.js",
-      "bytes": 41987,
-      "sha256": "a546d212fb12ed338c6cf9887ddf41ff3e25419802fb0cd441915025b2b38794"
+      "bytes": 42132,
+      "sha256": "fc97b3d68f39bd954541e757a386f502c2c1f8597ebb78b6752827d5f6936f1c"
     },
     {
       "path": "app/index.html",
@@ -109,8 +109,8 @@
     },
     {
       "path": "scripts/build_public.py",
-      "bytes": 6748,
-      "sha256": "d20f873166ee68e1811b52c28852f9fc8a4143fecf415618c4f71cd3548eafad"
+      "bytes": 6800,
+      "sha256": "b9260fe34d87cf8b665c418e263f46bbee6580cead637a053e7974609d6d9279"
     },
     {
       "path": "scripts/public_state.py",

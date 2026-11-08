@@ -1,6 +1,15 @@
 name: Daily public research and Pages
 
 on:
+  push:
+    branches: ['helm/site']
+    paths:
+      - 'app/**'
+      - 'content/**'
+      - 'pipeline/**'
+      - 'scripts/**'
+      - '方案/**'
+      - '.github/workflows/daily-public.yml'
   schedule:
     # UTC 23:17 = next day 07:17 Asia/Taipei (UTC+8).
     - cron: '17 23 * * *'
