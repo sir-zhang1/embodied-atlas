@@ -1,0 +1,10 @@
+.runtime/
+.data/
+pipeline/.data/
+_site/
+__pycache__/
+*.pyc
+*.sqlite
+*.sqlite-*
+.env
+.env.*

@@ -1,0 +1,7 @@
+[
+  {"id":"arxiv_robotics","name":"arXiv · Robotics 最近提交","url":"https://export.arxiv.org/api/query?search_query=cat%3Acs.RO&start=0&max_results=30&sortBy=submittedDate&sortOrder=descending","parser":"arxiv_api","priority":30},
+  {"id":"arxiv_foundations","name":"arXiv · 基础工作版本核查","url":"https://export.arxiv.org/api/query?id_list=2303.04137,2406.09246,2405.12213,2403.12945","parser":"arxiv_api","priority":30},
+  {"id":"arxiv_rss","name":"arXiv · Robotics RSS","url":"https://rss.arxiv.org/rss/cs.RO","parser":"arxiv_rss","priority":10},
+  {"id":"lerobot_releases","name":"LeRobot · 官方代码发行","url":"https://api.github.com/repos/huggingface/lerobot/releases?per_page=5","parser":"github","priority":30},
+  {"id":"openvla_model","name":"OpenVLA · 官方模型仓库","url":"https://huggingface.co/api/models/openvla/openvla-7b","parser":"huggingface","priority":30}
+]

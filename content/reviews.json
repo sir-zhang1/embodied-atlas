@@ -1,0 +1,375 @@
+[
+  {
+    "id": "sparsh-review",
+    "title_zh": "Sparsh：先学会读触觉，再用少量标签学具体任务",
+    "original_title": "Sparsh: Self-supervised touch representations for vision-based tactile sensing",
+    "work_id": "sparsh",
+    "published_on": "2024-10-31",
+    "type": "paper",
+    "source_name": "arXiv · 作者论文与项目页",
+    "source_url": "https://arxiv.org/html/2410.24090v1",
+    "domain_ids": [
+      "perception",
+      "tactile_perception",
+      "learning",
+      "self_supervised",
+      "tactile_sensors"
+    ],
+    "summary": "触觉传感器给出的图像，并不是已经标好的力、滑移或物体姿态。Sparsh 先从多种视觉触觉传感器的无标签图像学习通用表征，再训练小型任务解码器。本篇解释背景相减、时间窗口与冻结评测的作用，并用一个力估计实验说明：少标签优势有具体条件，不能读成无需标定、无需标签或适用所有触觉硬件。",
+    "why_selected": "连接触觉硬件、自监督表征和下游任务，适合从传感器信号进入机器学习；还能与采用几何估计的 NeuralFeels 对照。",
+    "reading_basis": "读取 arXiv v1（2024-10-31）第3—8节、附录C、D.2—D.4及D.9关键段，核对表5、6、13与作者项目页。未逐项重跑实验；数字来自作者报告，非本站独立复现。首次日期为arXiv首次提交日，非本站收录日。",
+    "sections": [
+      {
+        "heading": "问题从哪里来",
+        "kind": "fact",
+        "paragraphs": [
+          "同一种接触，换一块胶皮、照明或传感器，就可能呈现不同图像。若每次都从零训练“图像到力”或“图像到滑移”的网络，昂贵标签和训练过程都要重做。Sparsh 把任务拆开：先学习可复用的触觉特征，再用各任务的标签训练解码器。它研究的是 DIGIT、GelSight 等视觉触觉图像，不是把任意电压或压力阵列直接变成通用触觉。"
+        ],
+        "source_url": "https://sparsh-ssl.github.io/",
+        "locator": "Overview of Sparsh；Abstract"
+      },
+      {
+        "heading": "模型究竟看到了什么",
+        "kind": "fact",
+        "paragraphs": [
+          "图像型版本把当前帧与向前间隔5帧的一帧沿通道拼接；60帧/秒时覆盖约83毫秒。背景相减给出“未接触”的参照，时间差帮助区分静态压痕与正在移动的接触。MAE学习补回像素，DINO通过教师—学生学习稳定特征，IJEPA预测潜在表示；它们是不同预训练目标的一组模型，不能把 Sparsh 当成单一神经网络。"
+        ],
+        "source_url": "https://arxiv.org/html/2410.24090v1",
+        "locator": "第3节；附录C.2、C.4"
+      },
+      {
+        "heading": "用一个小例子理解训练与使用",
+        "kind": "analysis",
+        "paragraphs": [
+          "假设两张触觉图都有圆形压痕，但第二张的纹理向右移动；只看单帧可能分不清“压得更深”和“正在切向滑动”。把相隔约83毫秒的两帧一起输入，编码器就有机会保留变化信息。这里的“机会”不是保证：预训练只产生特征，下游仍需有标签的滑移或力数据告诉解码器怎样读这些特征。可以把编码器理解为读信号的工具，解码器是具体问题的标尺。"
+        ],
+        "source_url": "https://arxiv.org/html/2410.24090v1",
+        "locator": "依据第3—4节构造的教学微例，不是论文实验"
+      },
+      {
+        "heading": "冻结编码器究竟在检验什么",
+        "kind": "analysis",
+        "paragraphs": [
+          "若允许整套网络一起改，测试结果会混入下游标签重新塑造特征的收益。冻结编码器后，只让小型任务头学习怎样读取特征，就更接近回答“预训练到底留下了什么”。论文的从零训练基线使用相同容量，但编码器和任务头一起训练。这个比较检验少标签场景下的复用价值；它不等于相同总数据或相同总计算预算，因为预训练已经额外看过大量无标签接触。"
+        ],
+        "source_url": "https://arxiv.org/html/2410.24090v1",
+        "locator": "第4节Evaluation protocol；附录D.2；比较含义为本站分析"
+      },
+      {
+        "heading": "一个可核对的结果",
+        "kind": "author_claim",
+        "paragraphs": [
+          "在 DIGIT 三轴力估计中，尖形、球形压头用于训练，平面压头用于测试。使用约三分之一训练标签时，表5报告 E2E 从零训练的RMSE为61.42 mN，冻结 Sparsh-DINO 后训练解码器为44.03 mN；测试集有25,000个样本。结果支持这一数据设置下预训练能减少误差，却不能说明每种传感器、每个模型或更少标签都会同样改善。"
+        ],
+        "source_url": "https://arxiv.org/html/2410.24090v1",
+        "locator": "附录D.3，表5（1/3 dataset列）"
+      },
+      {
+        "heading": "为什么不直接引用“提升95.1%”",
+        "kind": "analysis",
+        "paragraphs": [
+          "同一v1的摘要和正文报告平均提升95.1%，附表13却写98.75%，两处口径未解释一致；本站不将其作为结论。跨任务平均还会混合力误差、分类和操控指标。更可用的比较是固定传感器、标签量和数据划分：61.42降到44.03 mN，相对误差下降约28.3%，不是准确率增加28.3个百分点。先复现一个任务，再检查换传感器实例或接触方式后是否成立，更能指导研究。"
+        ],
+        "source_url": "https://arxiv.org/html/2410.24090v1",
+        "locator": "摘要、第8节与附录表13的口径差异；表5数字的本站计算"
+      },
+      {
+        "heading": "表征更好，是否已经能完成任务",
+        "kind": "analysis",
+        "paragraphs": [
+          "Bead Maze把触觉表征接到Diffusion Policy上，用50条示范训练，再从10个新的随机起点实机测试。作者报告走过的距离有所改善，但没有任何模型完成整条迷宫。这项失败证据说明，单独预测力更准、短段轨迹误差更小，并不能保证长程控制成功。失去抓持后的恢复、力控制与误差累积仍是系统问题，不能把“走得更远”改写成“已解决灵巧操作”。"
+        ],
+        "source_url": "https://arxiv.org/html/2410.24090v1",
+        "locator": "第7.1节、图4(ix)、第8节；从指标到任务的区别为本站分析"
+      },
+      {
+        "heading": "边界与下一步",
+        "kind": "fact",
+        "paragraphs": [
+          "公开数据集约661k图像，其中约462.7k用于预训练，两者不能混写。标准评测多为冻结编码器、训练任务头，预训练无标签不等于整个系统无标签。作者也指出剪切交互数据不足、未系统消融时间历史长度。项目页的法向/切向场可视化通过图像重投影学习，不能未经额外标定就当作逐像素、以牛顿计的真实力场。"
+        ],
+        "source_url": "https://arxiv.org/html/2410.24090v1",
+        "locator": "第3、8节；附录D.4；项目页Normal and shear field decoding"
+      }
+    ],
+    "evidence": [
+      {
+        "condition": "DIGIT；尖形/球形训练、平面测试；约1/3训练标签；25k测试样本",
+        "result": "E2E RMSE 61.42 mN（95% CI 61.12–61.72）；Sparsh-DINO 44.03 mN（43.87–44.19）",
+        "caveat": "作者表5报告的区间；不能视为跨实验室泛化范围或本站独立复现。",
+        "source_url": "https://arxiv.org/html/2410.24090v1",
+        "locator": "附录D.3，表5"
+      },
+      {
+        "condition": "Bead Maze；50条训练示范；10个新的随机起点；真实机器人滚动执行",
+        "result": "作者报告部分预训练策略可走更远，但所有模型均未完成整条迷宫。",
+        "caveat": "行进距离与完整任务成功率不同；不能用短段预测误差代替闭环验收。",
+        "source_url": "https://arxiv.org/html/2410.24090v1",
+        "locator": "第7.1节；第8节Limitations"
+      }
+    ],
+    "limitations": [
+      "范围是视觉触觉传感器；不能直接迁移到任意压力、电阻或电压通道。",
+      "下游标签、传感器适配及校准仍然需要。",
+      "已有数据的接触方式与任务范围有限；时序窗口长度未做系统消融。",
+      "v1摘要/正文平均提升95.1%与附表13的98.75%不一致；应追溯单任务指标。",
+      "Bead Maze真实执行中所有模型均未完成整条迷宫；低层表征收益尚未解决完整控制链。"
+    ],
+    "related_work": [
+      {
+        "work_id": "diffusion",
+        "relation": "Sparsh 的 Bead Maze 实验使用 Diffusion Policy 作为动作策略；这是明确的方法使用关系。",
+        "source_url": "https://sparsh-ssl.github.io/",
+        "locator": "Bead Maze"
+      }
+    ]
+  },
+  {
+    "id": "neuralfeels-review",
+    "title_zh": "NeuralFeels：手遮住物体时，触觉怎样补全形状与位姿",
+    "original_title": "Neural feels with neural fields: Visuo-tactile perception for in-hand manipulation",
+    "work_id": "neuralfeels",
+    "published_on": "2023-12-20",
+    "type": "paper",
+    "source_name": "arXiv · 作者论文与项目页",
+    "source_url": "https://arxiv.org/html/2312.13469v1",
+    "domain_ids": [
+      "perception",
+      "multimodal_fusion",
+      "state_estimation",
+      "world_models",
+      "scene_representation",
+      "dexterous_manipulation"
+    ],
+    "summary": "手内操作会不断遮挡相机，物体又在手中移动。NeuralFeels 将视觉、指尖触觉和关节位置转换到同一几何估计问题：一边更新物体的神经隐式形状，一边追踪它的位姿。本篇通过接触点的小例子解释融合机制，同时区分未知形状与已知CAD条件、真实与仿真评测，以及离线回放结果和真实闭环控制。",
+    "why_selected": "它把“多模态互补”落到坐标系、深度、SDF和优化约束，适合研究视觉触觉融合，也能帮助识别硬件标定与评测真值的作用。",
+    "reading_basis": "读取 arXiv v1（2023-12-20）第2—4节、补充S1—S4关键段及作者项目页；使用该版本实验数字。作者项目页另标 Science Robotics 2024，不能将首次预印本日期改成期刊年份。未独立复现实验。",
+    "sections": [
+      {
+        "heading": "需要解决的是持续的空间估计",
+        "kind": "fact",
+        "paragraphs": [
+          "机器人旋转手中的物体时，相机只能看见局部，指尖恰好覆盖了重要表面。NeuralFeels 同时估计“物体长什么样”和“现在在哪里”。作者使用带四枚DIGIT的Allegro手、RGB-D相机和关节编码器；触觉提供接触局部，视觉提供整体背景，关节角则把每个指尖放回统一坐标系。缺少这一步，四块触觉图并不知道彼此的空间关系。"
+        ],
+        "source_url": "https://suddhu.github.io/neural-feels/",
+        "locator": "Overview；Method"
+      },
+      {
+        "heading": "先把不同传感器变成几何约束",
+        "kind": "fact",
+        "paragraphs": [
+          "前端从视觉分割出物体深度；触觉Transformer把胶皮图像转成局部深度和接触掩码。后端用带位姿的有符号距离场SDF表示物体：空间点输入网络，输出距表面的带符号距离，表面对应零值。系统交替更新形状与位姿，并保留关键帧。新接触帮助补形状，已有形状又帮助判断物体移动了多少，形成互相约束的循环。"
+        ],
+        "source_url": "https://arxiv.org/html/2312.13469v1",
+        "locator": "第4.4—4.7节；图2、8"
+      },
+      {
+        "heading": "在线学形状，不等于整套系统从零开始",
+        "kind": "fact",
+        "paragraphs": [
+          "新物体的几何场在交互中更新，但触觉深度前端已提前训练：它用仿真触觉图与深度配对监督，并加入真实传感器背景增强。后端还区分两种观测的含义：视觉可约束可见表面前的空空间，触觉只约束实际接触表面。因此“视觉和触觉都是图像”不意味着可以原样混合像素；输入必须先经过各自的成像处理和坐标标定。"
+        ],
+        "source_url": "https://arxiv.org/html/2312.13469v1",
+        "locator": "第4.4.2、4.6.2、4.7.1节；补充S2"
+      },
+      {
+        "heading": "一个接触点为何有用",
+        "kind": "analysis",
+        "paragraphs": [
+          "假设相机把杯壁估在x=20毫米，经过标定的指尖却报告接触点在x=23毫米。按当前形状和位姿计算，这个点离预测表面还有3毫米。优化器不能只说“平均一下”：它要结合其他视觉点、触觉点和运动约束，判断是位姿偏了、局部形状错了，还是观测含噪。多个接触点给出一致偏差时，修正才更有依据。数字为教学设定，不是论文误差结果。"
+        ],
+        "source_url": "https://arxiv.org/html/2312.13469v1",
+        "locator": "依据第4.5、4.7节构造的SDF约束微例"
+      },
+      {
+        "heading": "作者实际验证了什么",
+        "kind": "author_claim",
+        "paragraphs": [
+          "FeelSight含40段仿真和30段真实手内旋转，每段30秒；作者对每段用5个随机种子评估。未知形状设置报告最终重建F-score平均约81%、位姿误差约4.7毫米，已知CAD时约2.3毫米。F-score采用5毫米表面距离阈值；位姿用ADD-S衡量，因此这些数字不是逐帧纯平移误差，更不是操控成功率。已知CAD的结果也不能归给从零重建。"
+        ],
+        "source_url": "https://arxiv.org/html/2312.13469v1",
+        "locator": "第2.1—2.3节、图3、图5；第4.3节"
+      },
+      {
+        "heading": "重建指标为什么同时看准确与完整",
+        "kind": "analysis",
+        "paragraphs": [
+          "假设抽取100个重建表面点，其中80个离真值表面不到5毫米，精确率（precision）就是80%；再抽取100个真值点，只有60个在重建中找到足够近的点，完整率／召回率（recall）就是60%。调和平均F-score为2×0.8×0.6÷(0.8+0.6)≈68.6%。这是教学例子：只把眼前小块表面拟合得很准，仍可能漏掉物体背面；只让形状看起来完整，又可能填出错误表面。阈值不同，分数也不能直接横比。"
+        ],
+        "source_url": "https://arxiv.org/html/2312.13469v1",
+        "locator": "第2.1节的F-score定义；数值为本站构造的教学例子"
+      },
+      {
+        "heading": "94%的改善应怎样读",
+        "kind": "analysis",
+        "paragraphs": [
+          "遮挡分析把同一已知魔方序列放到200个模拟相机视角下，作者报告平均改善21.2%，最重遮挡视角最高94.1%。最高值不能代表所有任务。另一个更关键的限制在补充材料：主结果按1 Hz回放数据评估；真实位姿参照用三台相机、已知扫描形状和同一跟踪框架估计，是伪真值，不能视为完全独立的外部测量。因而论文有力展示了融合感知的价值，但还不能直接证明它能以同等精度实时控制任意灵巧操作。"
+        ],
+        "source_url": "https://arxiv.org/html/2312.13469v1",
+        "locator": "第2.4节，图6；补充S1、S3 Compute and timings"
+      },
+      {
+        "heading": "适合怎样接着研究",
+        "kind": "analysis",
+        "paragraphs": [
+          "先把“看得更准”和“操作得更好”拆成两个问题。可以固定旋转数据，比较视觉、触觉及融合，记录遮挡、标定误差和初始形状对估计的影响；再设计让策略真正使用估计结果的实验。作者指出未知物体开始几秒几何不完整、真机接触较稀疏且旋转有时需人工干预。换硬件时应先检验触觉深度与坐标变换，不能仅替换一个网络就期待复用全部结论。"
+        ],
+        "source_url": "https://arxiv.org/html/2312.13469v1",
+        "locator": "第3节 System limitations；补充S3—S4"
+      }
+    ],
+    "evidence": [
+      {
+        "condition": "70段手内旋转：40仿真、30真实；每段30秒、5个评估种子；未知形状",
+        "result": "作者报告最终重建F-score平均81%（表面阈值5 mm），平均ADD-S约4.7 mm；已知CAD跟踪约2.3 mm",
+        "caveat": "主结果按1 Hz回放；真机参考为多相机伪真值；不同几何先验不能混比。",
+        "source_url": "https://arxiv.org/html/2312.13469v1",
+        "locator": "第2.1—2.3；图3、5；补充S1、S3"
+      },
+      {
+        "condition": "已知魔方；200个仿真相机位置，提供真值分割",
+        "result": "融合相对纯视觉平均改善21.2%，最重遮挡视角最高94.1%",
+        "caveat": "同一序列的视角实验，不代表200个独立真实操控任务。",
+        "source_url": "https://arxiv.org/html/2312.13469v1",
+        "locator": "第2.4节；图6"
+      }
+    ],
+    "limitations": [
+      "初始几何不足可能导致跟踪失败；旋转未必覆盖全部表面。",
+      "固定相机与已标定运动学是重要前提，真实系统有触觉与动力学域差异。",
+      "本文评估感知；不能把旋转演示当成新感知模块提高闭环策略成功率的证据。",
+      "真实位姿参照由同一跟踪框架结合多相机与已知形状生成，存在参考估计误差，并非独立运动捕捉真值。"
+    ],
+    "related_work": [
+      {
+        "work_id": "sparsh",
+        "relation": "研究方向相关：Sparsh学通用触觉表征，NeuralFeels使用几何深度与SLAM融合；未声称互相继承。",
+        "source_url": "https://arxiv.org/html/2312.13469v1",
+        "locator": "第4.4—4.7节，与Sparsh第3—4节对照"
+      }
+    ]
+  },
+  {
+    "id": "diffusion-policy-review",
+    "title_zh": "Diffusion Policy：为什么把动作序列当成要去噪的数据",
+    "original_title": "Diffusion Policy: Visuomotor Policy Learning via Action Diffusion",
+    "work_id": "diffusion",
+    "published_on": "2023-03-07",
+    "type": "paper",
+    "source_name": "arXiv · 作者论文与项目页",
+    "source_url": "https://arxiv.org/html/2303.04137v5",
+    "domain_ids": [
+      "learning",
+      "imitation_learning",
+      "control",
+      "dexterous_manipulation",
+      "feedback_control"
+    ],
+    "summary": "同一个观测下，人可能从左边或右边绕过障碍；把两种示范简单平均，得到的动作反而可能无效。Diffusion Policy 学习观测条件下的动作分布，通过逐步去噪生成一段连贯动作，执行一部分后重新观察。本篇解释训练目标与闭环执行的区别，并结合真实Push-T实验说明效果、计算开销和行为克隆仍然存在的限制。",
+    "why_selected": "它连接生成模型、模仿学习和机器人闭环执行，是理解后续动作分块、扩散策略及Sparsh操控实验的基础。",
+    "reading_basis": "首次提交日为2023-03-07；本文读取扩展稿arXiv v5（2024-03-14）第2—6、9节及附录B、C、D相关段，数字固定用v5。arXiv摘要元数据仍写12任务，而v5全文写15任务，本解读使用已定位的单任务证据，不混用总体任务数或46.9%汇总。未独立复现。",
+    "sections": [
+      {
+        "heading": "动作不是只有一个正确答案",
+        "kind": "analysis",
+        "paragraphs": [
+          "面对同一障碍，左绕和右绕都可能成功。若训练目标迫使网络预测两条路线的平均，输出可能正好撞向障碍；若每一步独立随机选左右，又会来回犹豫。问题因此不仅是“预测更准确”，还包括保留多种有效行为，并在一小段时间内坚持一种。Diffusion Policy选择生成整个动作片段，让动作之间的相关性也进入学习对象。"
+        ],
+        "source_url": "https://diffusion-policy.cs.columbia.edu/",
+        "locator": "Highlights；multimodal behavior与action sequence演示"
+      },
+      {
+        "heading": "训练时加噪，使用时去噪",
+        "kind": "fact",
+        "paragraphs": [
+          "训练把示范动作片段加上噪声，让网络在相机观测和噪声等级条件下预测噪声。使用时从随机动作片段出发，重复去噪得到可执行片段。生成对象是动作而非未来画面，视觉特征作为条件输入。论文比较卷积和Transformer去噪网络；扩散策略不意味着一定要使用Transformer，也不等于强化学习或机器人在线试错。"
+        ],
+        "source_url": "https://arxiv.org/html/2303.04137v5",
+        "locator": "第2.2—2.3、3.1节"
+      },
+      {
+        "heading": "把一个训练步骤算清楚",
+        "kind": "analysis",
+        "paragraphs": [
+          "只看一个归一化动作维度：示范值0.6，假设本次加噪采用0.8×动作+0.6×噪声，采样噪声为−0.5，则输入是0.18。若网络预测噪声−0.4，平方误差是(−0.5+0.4)²=0.01；利用预测反算干净动作得到(0.18−0.6×(−0.4))/0.8=0.525。这个教学例子说明网络学习的是去噪方向；实际采样还要按噪声调度执行多步，不能把一次反算当完整控制器。"
+        ],
+        "source_url": "https://arxiv.org/html/2303.04137v5",
+        "locator": "依据第2.1—2.3节构造的简化数值例子"
+      },
+      {
+        "heading": "为何预测一段，却只执行一部分",
+        "kind": "fact",
+        "paragraphs": [
+          "系统读取最近的观测，预测较长动作窗口，只执行其中较短的一段，再获取新观测重算。这样兼顾连贯性与纠偏：执行太短可能频繁改变模式，太长则来不及响应扰动。视觉编码不必在每轮去噪重复计算。这个设计与低层控制器分工明确，策略产出的目标还要经过机器人控制环，不能把策略频率和电机控制频率混为一谈。"
+        ],
+        "source_url": "https://arxiv.org/html/2303.04137v5",
+        "locator": "第2.3、3.4、4.3节；附录D.0.1"
+      },
+      {
+        "heading": "动作窗口的作用有消融支持吗",
+        "kind": "author_claim",
+        "paragraphs": [
+          "图5将执行窗口长度单独改变：只执行一步会削弱动作连贯性，执行过长又降低响应能力。作者报告，在所测大多数任务中，八步窗口表现最好；这支持“需要折中”，而不是给所有机器人规定八步。相同步数在不同动作频率下对应不同持续时间。论文还单独注入观测到动作之间的延迟，因此窗口长度、推理耗时和控制频率应分开记录。"
+        ],
+        "source_url": "https://arxiv.org/html/2303.04137v5",
+        "locator": "第4.3、5.3节；图5动作窗口和延迟消融"
+      },
+      {
+        "heading": "真实Push-T结果及其条件",
+        "kind": "author_claim",
+        "paragraphs": [
+          "UR5真实任务要求把T形块推入目标后，再将末端移至终止区；最终位置重叠率决定成绩。表6报告端到端卷积版Diffusion Policy成功率95%、平均IoU 0.80；最佳LSTM-GMM变体成功率20%。策略命令为10 Hz，再插值到125 Hz执行。结果来自136条示范与各方法共享的20组测试初始状态，说明这一配置的效果，不能推成任意机器人的通用成功率。"
+        ],
+        "source_url": "https://arxiv.org/html/2303.04137v5",
+        "locator": "第6.1节，表6；附录C.1、D.0.1"
+      },
+      {
+        "heading": "成功率之外还要检查比较条件",
+        "kind": "analysis",
+        "paragraphs": [
+          "95%在20次测试中对应19次成功；它表明这个测试集合表现很好，却不能给出换房间、相机或物体后的成功概率。附录说明各方法训练12小时，通常取最后检查点，IBC则按训练动作误差选点，因此训练与选点协议也需要随结果一起阅读。对自己的实验，可先固定示范和初始状态，再分别改变动作窗口、传感输入和去噪步数，才能判断收益来自哪里；同时记录时延与失败恢复，避免只挑最终成功的录像。"
+        ],
+        "source_url": "https://arxiv.org/html/2303.04137v5",
+        "locator": "第6.1节、表6、附录C.1.1—C.1.2；19/20及实验建议为本站分析"
+      },
+      {
+        "heading": "需要带走的边界",
+        "kind": "analysis",
+        "paragraphs": [
+          "扩散没有消除行为克隆对示范覆盖的依赖：没见过的恢复动作仍可能不会做，多次去噪还增加时延。比较模型时应固定示范、相机输入、动作空间和检查点选择，而不是只换网络名称。复现可先用公开Push-T数据观察左右绕行与执行窗口，再测扰动后的恢复。若接入触觉编码器，需重新验证增益来自触觉信息还是数据量、训练预算和控制设置的变化。"
+        ],
+        "source_url": "https://arxiv.org/html/2303.04137v5",
+        "locator": "第5.2、9节；实验设计建议为本站分析"
+      }
+    ],
+    "evidence": [
+      {
+        "condition": "真实UR5 Push-T；136条示范；各方法共享20组初始状态；推入目标后移开末端，按终态IoU定义成功",
+        "result": "卷积E2E Diffusion Policy成功率95%、平均IoU 0.80；最佳LSTM-GMM成功率20%",
+        "caveat": "作者实验；阈值取示范数据最低IoU；不是所有机器人或操作任务的成功率。",
+        "source_url": "https://arxiv.org/html/2303.04137v5",
+        "locator": "表6；第6.1节；附录C.1.2"
+      },
+      {
+        "condition": "论文所测任务的动作执行窗口与模拟延迟消融，位置控制设置",
+        "result": "作者报告大多数所测任务以8步执行窗口取得最佳表现；过短与过长均有代价。",
+        "caveat": "8步不是固定毫秒数，也不是跨任务、硬件通用最优值。",
+        "source_url": "https://arxiv.org/html/2303.04137v5",
+        "locator": "第5.3节；图5左"
+      }
+    ],
+    "limitations": [
+      "仍依赖示范质量和覆盖，失败恢复与分布外情境不自动解决。",
+      "多步去噪增加计算和时延，高频反馈任务需要另验。",
+      "不同版本的任务总数与摘要不一致；本文只用已定位的v5单任务证据。"
+    ],
+    "related_work": [
+      {
+        "work_id": "sparsh",
+        "relation": "Sparsh在Bead Maze中使用Diffusion Policy读取触觉表征并生成关节动作。",
+        "source_url": "https://sparsh-ssl.github.io/",
+        "locator": "Bead Maze"
+      }
+    ]
+  }
+]

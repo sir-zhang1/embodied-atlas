@@ -1,0 +1,23 @@
+{
+  "$comment": "接口映射模板，尚未安装到 AIHOT。替换 url 后先在后台预览；保持模型和付费安全阀关闭。领域/版本关系由 embodied 模块读取完整 JSON，不靠通用新闻字段保存。",
+  "sources": [{
+    "id": "embodied-research-adapter",
+    "name": "具身智能研究资料",
+    "kind": "json_list",
+    "config": {
+      "url": "https://YOUR-SITE.example/public-feed.json",
+      "itemsPath": "items",
+      "titlePaths": ["editorial.title_zh", "title"],
+      "summaryPaths": ["editorial.summary", "summary"],
+      "urlTemplate": "{raw:url}",
+      "publishedAtPath": "published_at",
+      "externalIdPath": "id"
+    },
+    "tier": "T1",
+    "participation_mode": "editorial",
+    "interval_minutes": 1440,
+    "tags": ["具身智能", "研究元数据"],
+    "site_fulltext": false,
+    "syndicate_fulltext": false
+  }]
+}

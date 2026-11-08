@@ -1,0 +1,1317 @@
+{
+  "schema_version": 1,
+  "status": "proposal_pending_owner_review",
+  "updated_on": "2026-11-08",
+  "rationale": "以感知—表征/预测—规划—控制的闭环为主轴，以本体、学习、交互、数据、仿真和评测为支撑；为浏览所做的编辑框架，不是学界唯一分类。导航/操作/运动用任务视角横向检索，机械臂/足式/人形用本体标签，避免把同一内容复制成互斥目录。",
+  "facet_examples": {
+    "tasks": [
+      "navigation",
+      "manipulation",
+      "locomotion",
+      "human_collaboration"
+    ],
+    "embodiments": [
+      "fixed_arm",
+      "mobile_manipulator",
+      "legged",
+      "humanoid",
+      "soft_robot"
+    ],
+    "methods": [
+      "imitation_learning",
+      "reinforcement_learning",
+      "diffusion_policy",
+      "vla",
+      "model_predictive_control"
+    ]
+  },
+  "nodes": [
+    {
+      "id": "embodiment",
+      "parent_id": null,
+      "label": "本体与传感",
+      "en": "Embodiment & Sensing",
+      "question": "机器人用什么身体与外界接触，能测到哪些信号？",
+      "band": "support",
+      "source_ids": [
+        "morphology",
+        "survey",
+        "lerobot"
+      ],
+      "status": "proposed",
+      "source_scope": "topic_orientation_and_further_reading_not_individual_claim_verification"
+    },
+    {
+      "id": "morphology_design",
+      "parent_id": "embodiment",
+      "label": "机构与形态",
+      "en": "Morphology",
+      "summary": "机械臂、轮式、足式、灵巧手与软体结构",
+      "source_ids": [
+        "morphology",
+        "survey",
+        "lerobot"
+      ],
+      "status": "proposed",
+      "source_scope": "topic_orientation_and_further_reading_not_individual_claim_verification"
+    },
+    {
+      "id": "actuation",
+      "parent_id": "embodiment",
+      "label": "执行器与驱动",
+      "en": "Actuation",
+      "summary": "位置、速度、力矩驱动及能耗约束",
+      "source_ids": [
+        "morphology",
+        "survey",
+        "lerobot"
+      ],
+      "status": "proposed",
+      "source_scope": "topic_orientation_and_further_reading_not_individual_claim_verification"
+    },
+    {
+      "id": "tactile_sensors",
+      "parent_id": "embodiment",
+      "label": "触觉与力觉传感",
+      "en": "Tactile & Force Sensing",
+      "summary": "光学触觉、阵列、力/力矩及接触信号",
+      "source_ids": [
+        "morphology",
+        "survey",
+        "lerobot"
+      ],
+      "status": "proposed",
+      "source_scope": "topic_orientation_and_further_reading_not_individual_claim_verification"
+    },
+    {
+      "id": "sensor_calibration",
+      "parent_id": "embodiment",
+      "label": "标定与同步",
+      "en": "Calibration & Synchronization",
+      "summary": "坐标系、外参、时间戳、噪声与延迟",
+      "source_ids": [
+        "morphology",
+        "survey",
+        "lerobot"
+      ],
+      "status": "proposed",
+      "source_scope": "topic_orientation_and_further_reading_not_individual_claim_verification"
+    },
+    {
+      "id": "perception",
+      "parent_id": null,
+      "label": "感知与状态估计",
+      "en": "Perception & State Estimation",
+      "question": "把摄像头、触觉和关节信号变成可用于行动的状态。",
+      "band": "loop",
+      "source_ids": [
+        "survey",
+        "neuralfeels",
+        "neuralfeels_code",
+        "sparsh"
+      ],
+      "status": "proposed",
+      "source_scope": "topic_orientation_and_further_reading_not_individual_claim_verification"
+    },
+    {
+      "id": "visual_perception",
+      "parent_id": "perception",
+      "label": "视觉与三维感知",
+      "en": "Vision & 3D Perception",
+      "summary": "检测、分割、深度与物体姿态",
+      "source_ids": [
+        "survey",
+        "neuralfeels",
+        "neuralfeels_code",
+        "sparsh"
+      ],
+      "status": "proposed",
+      "source_scope": "topic_orientation_and_further_reading_not_individual_claim_verification"
+    },
+    {
+      "id": "tactile_perception",
+      "parent_id": "perception",
+      "label": "触觉表征与估计",
+      "en": "Tactile Representation",
+      "summary": "从触觉信号估计接触、滑移、力或物体性质",
+      "source_ids": [
+        "survey",
+        "neuralfeels",
+        "neuralfeels_code",
+        "sparsh"
+      ],
+      "status": "proposed",
+      "source_scope": "topic_orientation_and_further_reading_not_individual_claim_verification"
+    },
+    {
+      "id": "multimodal_fusion",
+      "parent_id": "perception",
+      "label": "多模态融合",
+      "en": "Multimodal Fusion",
+      "summary": "视觉、触觉、音频与本体感觉如何互补",
+      "source_ids": [
+        "survey",
+        "neuralfeels",
+        "neuralfeels_code",
+        "sparsh"
+      ],
+      "status": "proposed",
+      "source_scope": "topic_orientation_and_further_reading_not_individual_claim_verification"
+    },
+    {
+      "id": "state_estimation",
+      "parent_id": "perception",
+      "label": "状态估计与不确定性",
+      "en": "State Estimation",
+      "summary": "滤波、优化、置信度与遮挡处理",
+      "source_ids": [
+        "survey",
+        "neuralfeels",
+        "neuralfeels_code",
+        "sparsh"
+      ],
+      "status": "proposed",
+      "source_scope": "topic_orientation_and_further_reading_not_individual_claim_verification"
+    },
+    {
+      "id": "active_perception",
+      "parent_id": "perception",
+      "label": "主动感知",
+      "en": "Active Perception",
+      "summary": "通过移动或触碰，获取对任务有用的信息",
+      "source_ids": [
+        "survey",
+        "neuralfeels",
+        "neuralfeels_code",
+        "sparsh"
+      ],
+      "status": "proposed",
+      "source_scope": "topic_orientation_and_further_reading_not_individual_claim_verification"
+    },
+    {
+      "id": "world_models",
+      "parent_id": null,
+      "label": "世界表征与预测",
+      "en": "World Representation & Prediction",
+      "question": "记住环境的结构，并预测行动会造成什么变化。",
+      "band": "loop",
+      "source_ids": [
+        "survey",
+        "dreamer",
+        "habitat",
+        "neuralfeels"
+      ],
+      "status": "proposed",
+      "source_scope": "topic_orientation_and_further_reading_not_individual_claim_verification"
+    },
+    {
+      "id": "spatial_mapping",
+      "parent_id": "world_models",
+      "label": "定位、建图与空间记忆",
+      "en": "SLAM & Spatial Memory",
+      "summary": "几何地图、语义地图与持续定位",
+      "source_ids": [
+        "survey",
+        "dreamer",
+        "habitat",
+        "neuralfeels"
+      ],
+      "status": "proposed",
+      "source_scope": "topic_orientation_and_further_reading_not_individual_claim_verification"
+    },
+    {
+      "id": "scene_representation",
+      "parent_id": "world_models",
+      "label": "物体与场景表征",
+      "en": "Object & Scene Representation",
+      "summary": "点云、神经场、场景图和物体关系",
+      "source_ids": [
+        "survey",
+        "dreamer",
+        "habitat",
+        "neuralfeels"
+      ],
+      "status": "proposed",
+      "source_scope": "topic_orientation_and_further_reading_not_individual_claim_verification"
+    },
+    {
+      "id": "predictive_dynamics",
+      "parent_id": "world_models",
+      "label": "动力学与世界模型",
+      "en": "Dynamics & World Models",
+      "summary": "预测下一状态、接触或视觉变化",
+      "source_ids": [
+        "survey",
+        "dreamer",
+        "habitat",
+        "neuralfeels"
+      ],
+      "status": "proposed",
+      "source_scope": "topic_orientation_and_further_reading_not_individual_claim_verification"
+    },
+    {
+      "id": "affordance",
+      "parent_id": "world_models",
+      "label": "可供性与物理常识",
+      "en": "Affordance & Physical Reasoning",
+      "summary": "物体可怎样操作，以及操作条件",
+      "source_ids": [
+        "survey",
+        "dreamer",
+        "habitat",
+        "neuralfeels"
+      ],
+      "status": "proposed",
+      "source_scope": "topic_orientation_and_further_reading_not_individual_claim_verification"
+    },
+    {
+      "id": "planning",
+      "parent_id": null,
+      "label": "任务规划与推理",
+      "en": "Task Planning & Reasoning",
+      "question": "把目标拆成可执行步骤，并在失败后重新安排。",
+      "band": "loop",
+      "source_ids": [
+        "saycan",
+        "survey",
+        "manipulation"
+      ],
+      "status": "proposed",
+      "source_scope": "topic_orientation_and_further_reading_not_individual_claim_verification"
+    },
+    {
+      "id": "task_decomposition",
+      "parent_id": "planning",
+      "label": "任务分解与技能编排",
+      "en": "Task Decomposition",
+      "summary": "长程任务、符号规划和技能选择",
+      "source_ids": [
+        "saycan",
+        "survey",
+        "manipulation"
+      ],
+      "status": "proposed",
+      "source_scope": "topic_orientation_and_further_reading_not_individual_claim_verification"
+    },
+    {
+      "id": "language_grounding",
+      "parent_id": "planning",
+      "label": "语言与环境落地",
+      "en": "Language Grounding",
+      "summary": "把语言指令对应到物体、位置及可行动作",
+      "source_ids": [
+        "saycan",
+        "survey",
+        "manipulation"
+      ],
+      "status": "proposed",
+      "source_scope": "topic_orientation_and_further_reading_not_individual_claim_verification"
+    },
+    {
+      "id": "task_motion_planning",
+      "parent_id": "planning",
+      "label": "任务与运动联合规划",
+      "en": "Task and Motion Planning",
+      "summary": "高层步骤与几何可行性共同约束",
+      "source_ids": [
+        "saycan",
+        "survey",
+        "manipulation"
+      ],
+      "status": "proposed",
+      "source_scope": "topic_orientation_and_further_reading_not_individual_claim_verification"
+    },
+    {
+      "id": "navigation_planning",
+      "parent_id": "planning",
+      "label": "导航、探索与路径规划",
+      "en": "Navigation & Exploration",
+      "summary": "目标搜索、避障、空间路径和信息获取",
+      "source_ids": [
+        "saycan",
+        "survey",
+        "manipulation"
+      ],
+      "status": "proposed",
+      "source_scope": "topic_orientation_and_further_reading_not_individual_claim_verification"
+    },
+    {
+      "id": "failure_recovery",
+      "parent_id": "planning",
+      "label": "执行监测与失败恢复",
+      "en": "Execution Monitoring",
+      "summary": "识别失败、更新状态并重规划",
+      "source_ids": [
+        "saycan",
+        "survey",
+        "manipulation"
+      ],
+      "status": "proposed",
+      "source_scope": "topic_orientation_and_further_reading_not_individual_claim_verification"
+    },
+    {
+      "id": "control",
+      "parent_id": null,
+      "label": "运动与接触控制",
+      "en": "Motion & Contact Control",
+      "question": "让身体稳定、准确地执行动作，接触环境时保持可控。",
+      "band": "loop",
+      "source_ids": [
+        "underactuated",
+        "manipulation",
+        "safecontrol"
+      ],
+      "status": "proposed",
+      "source_scope": "topic_orientation_and_further_reading_not_individual_claim_verification"
+    },
+    {
+      "id": "kinematics_dynamics",
+      "parent_id": "control",
+      "label": "运动学与动力学",
+      "en": "Kinematics & Dynamics",
+      "summary": "关节、末端、力与运动之间的关系",
+      "source_ids": [
+        "underactuated",
+        "manipulation",
+        "safecontrol"
+      ],
+      "status": "proposed",
+      "source_scope": "topic_orientation_and_further_reading_not_individual_claim_verification"
+    },
+    {
+      "id": "feedback_control",
+      "parent_id": "control",
+      "label": "反馈、最优与预测控制",
+      "en": "Feedback & MPC",
+      "summary": "反馈稳定性、优化控制与实时约束",
+      "source_ids": [
+        "underactuated",
+        "manipulation",
+        "safecontrol"
+      ],
+      "status": "proposed",
+      "source_scope": "topic_orientation_and_further_reading_not_individual_claim_verification"
+    },
+    {
+      "id": "locomotion",
+      "parent_id": "control",
+      "label": "足式运动与全身控制",
+      "en": "Locomotion & Whole-body Control",
+      "summary": "平衡、步态、接触切换及协同运动",
+      "source_ids": [
+        "underactuated",
+        "manipulation",
+        "safecontrol"
+      ],
+      "status": "proposed",
+      "source_scope": "topic_orientation_and_further_reading_not_individual_claim_verification"
+    },
+    {
+      "id": "dexterous_manipulation",
+      "parent_id": "control",
+      "label": "抓取与灵巧操作",
+      "en": "Grasping & Dexterous Manipulation",
+      "summary": "抓取、双臂、手内操作与物体重排",
+      "source_ids": [
+        "underactuated",
+        "manipulation",
+        "safecontrol"
+      ],
+      "status": "proposed",
+      "source_scope": "topic_orientation_and_further_reading_not_individual_claim_verification"
+    },
+    {
+      "id": "contact_control",
+      "parent_id": "control",
+      "label": "接触与柔顺控制",
+      "en": "Contact & Compliance",
+      "summary": "力控、阻抗、摩擦、滑移与柔性物体",
+      "source_ids": [
+        "underactuated",
+        "manipulation",
+        "safecontrol"
+      ],
+      "status": "proposed",
+      "source_scope": "topic_orientation_and_further_reading_not_individual_claim_verification"
+    },
+    {
+      "id": "learning",
+      "parent_id": null,
+      "label": "机器人学习与基础模型",
+      "en": "Robot Learning & Foundation Models",
+      "question": "从示范、试错和大量数据中学会感知或行动，并迁移到新任务。",
+      "band": "support",
+      "source_ids": [
+        "diffusion",
+        "rt1",
+        "rt2",
+        "octo",
+        "openvla",
+        "sparsh"
+      ],
+      "status": "proposed",
+      "source_scope": "topic_orientation_and_further_reading_not_individual_claim_verification"
+    },
+    {
+      "id": "imitation_learning",
+      "parent_id": "learning",
+      "label": "模仿学习与行为克隆",
+      "en": "Imitation Learning & BC",
+      "summary": "从专家示范学习动作，包括动作分块与扩散策略",
+      "source_ids": [
+        "diffusion",
+        "rt1",
+        "rt2",
+        "octo",
+        "openvla",
+        "sparsh"
+      ],
+      "status": "proposed",
+      "source_scope": "topic_orientation_and_further_reading_not_individual_claim_verification"
+    },
+    {
+      "id": "reinforcement_learning",
+      "parent_id": "learning",
+      "label": "强化学习",
+      "en": "Reinforcement Learning",
+      "summary": "从奖励、交互及离线数据改进策略",
+      "source_ids": [
+        "diffusion",
+        "rt1",
+        "rt2",
+        "octo",
+        "openvla",
+        "sparsh"
+      ],
+      "status": "proposed",
+      "source_scope": "topic_orientation_and_further_reading_not_individual_claim_verification"
+    },
+    {
+      "id": "self_supervised",
+      "parent_id": "learning",
+      "label": "自监督与表征学习",
+      "en": "Self-supervised Learning",
+      "summary": "利用无标签、多模态及时间结构学习表示",
+      "source_ids": [
+        "diffusion",
+        "rt1",
+        "rt2",
+        "octo",
+        "openvla",
+        "sparsh"
+      ],
+      "status": "proposed",
+      "source_scope": "topic_orientation_and_further_reading_not_individual_claim_verification"
+    },
+    {
+      "id": "vla",
+      "parent_id": "learning",
+      "label": "视觉—语言—动作与通用策略",
+      "en": "VLA & Generalist Policies",
+      "summary": "用大规模预训练连接指令、感知与动作",
+      "source_ids": [
+        "diffusion",
+        "rt1",
+        "rt2",
+        "octo",
+        "openvla",
+        "sparsh"
+      ],
+      "status": "proposed",
+      "source_scope": "topic_orientation_and_further_reading_not_individual_claim_verification"
+    },
+    {
+      "id": "adaptation",
+      "parent_id": "learning",
+      "label": "泛化、迁移与持续适应",
+      "en": "Generalization & Adaptation",
+      "summary": "跨对象、场景、本体及传感器，含少样本适配",
+      "source_ids": [
+        "diffusion",
+        "rt1",
+        "rt2",
+        "octo",
+        "openvla",
+        "sparsh"
+      ],
+      "status": "proposed",
+      "source_scope": "topic_orientation_and_further_reading_not_individual_claim_verification"
+    },
+    {
+      "id": "interaction",
+      "parent_id": null,
+      "label": "人机交互与协作",
+      "en": "Human-Robot Interaction & Collaboration",
+      "question": "机器人如何理解人的意图、获得指导，并与人或其他机器人配合。",
+      "band": "loop",
+      "source_ids": [
+        "hri",
+        "survey",
+        "saycan"
+      ],
+      "status": "proposed",
+      "source_scope": "topic_orientation_and_further_reading_not_individual_claim_verification"
+    },
+    {
+      "id": "intent_communication",
+      "parent_id": "interaction",
+      "label": "意图理解与沟通",
+      "en": "Intent & Communication",
+      "summary": "语言、手势、注视与互动反馈",
+      "source_ids": [
+        "hri",
+        "survey",
+        "saycan"
+      ],
+      "status": "proposed",
+      "source_scope": "topic_orientation_and_further_reading_not_individual_claim_verification"
+    },
+    {
+      "id": "shared_autonomy",
+      "parent_id": "interaction",
+      "label": "共享自主与遥操作",
+      "en": "Shared Autonomy & Teleoperation",
+      "summary": "人类指导和机器人自主的边界",
+      "source_ids": [
+        "hri",
+        "survey",
+        "saycan"
+      ],
+      "status": "proposed",
+      "source_scope": "topic_orientation_and_further_reading_not_individual_claim_verification"
+    },
+    {
+      "id": "collaboration",
+      "parent_id": "interaction",
+      "label": "协作与任务分配",
+      "en": "Collaboration & Coordination",
+      "summary": "人机和多机器人协作中的角色、任务和通信",
+      "source_ids": [
+        "hri",
+        "survey",
+        "saycan"
+      ],
+      "status": "proposed",
+      "source_scope": "topic_orientation_and_further_reading_not_individual_claim_verification"
+    },
+    {
+      "id": "human_evaluation",
+      "parent_id": "interaction",
+      "label": "可用性、信任与人因",
+      "en": "Usability, Trust & Human Factors",
+      "summary": "评估交互体验、理解差异和接管行为",
+      "source_ids": [
+        "hri",
+        "survey",
+        "saycan"
+      ],
+      "status": "proposed",
+      "source_scope": "topic_orientation_and_further_reading_not_individual_claim_verification"
+    },
+    {
+      "id": "data",
+      "parent_id": null,
+      "label": "机器人数据与研究工具",
+      "en": "Robot Data & Research Tooling",
+      "question": "如何获得、清洗和复用足够可靠的交互数据，让实验可以复现。",
+      "band": "support",
+      "source_ids": [
+        "openx",
+        "droid",
+        "lerobot"
+      ],
+      "status": "proposed",
+      "source_scope": "topic_orientation_and_further_reading_not_individual_claim_verification"
+    },
+    {
+      "id": "demonstration_collection",
+      "parent_id": "data",
+      "label": "示范与交互数据采集",
+      "en": "Demonstration Collection",
+      "summary": "遥操作、自主采集、接触与失败样本",
+      "source_ids": [
+        "openx",
+        "droid",
+        "lerobot"
+      ],
+      "status": "proposed",
+      "source_scope": "topic_orientation_and_further_reading_not_individual_claim_verification"
+    },
+    {
+      "id": "dataset_quality",
+      "parent_id": "data",
+      "label": "数据格式、质量与标注",
+      "en": "Data Quality & Annotation",
+      "summary": "同步、轨迹、动作定义、清洗与标注",
+      "source_ids": [
+        "openx",
+        "droid",
+        "lerobot"
+      ],
+      "status": "proposed",
+      "source_scope": "topic_orientation_and_further_reading_not_individual_claim_verification"
+    },
+    {
+      "id": "cross_embodiment_data",
+      "parent_id": "data",
+      "label": "跨本体数据与数据混合",
+      "en": "Cross-embodiment Data",
+      "summary": "不同机器人和传感器的数据对齐",
+      "source_ids": [
+        "openx",
+        "droid",
+        "lerobot"
+      ],
+      "status": "proposed",
+      "source_scope": "topic_orientation_and_further_reading_not_individual_claim_verification"
+    },
+    {
+      "id": "reproducible_systems",
+      "parent_id": "data",
+      "label": "复现实验与部署工具",
+      "en": "Reproducible Tooling",
+      "summary": "配置、版本、日志、推理延迟与硬件接口",
+      "source_ids": [
+        "openx",
+        "droid",
+        "lerobot"
+      ],
+      "status": "proposed",
+      "source_scope": "topic_orientation_and_further_reading_not_individual_claim_verification"
+    },
+    {
+      "id": "simulation",
+      "parent_id": null,
+      "label": "仿真与迁移",
+      "en": "Simulation & Sim-to-Real",
+      "question": "在可重复的虚拟环境中学习和测试，再检查真实世界是否成立。",
+      "band": "support",
+      "source_ids": [
+        "survey",
+        "habitat",
+        "behavior",
+        "safecontrol"
+      ],
+      "status": "proposed",
+      "source_scope": "topic_orientation_and_further_reading_not_individual_claim_verification"
+    },
+    {
+      "id": "physics_simulation",
+      "parent_id": "simulation",
+      "label": "物理与传感仿真",
+      "en": "Physics & Sensor Simulation",
+      "summary": "刚体、接触、软体、触觉与视觉仿真",
+      "source_ids": [
+        "survey",
+        "habitat",
+        "behavior",
+        "safecontrol"
+      ],
+      "status": "proposed",
+      "source_scope": "topic_orientation_and_further_reading_not_individual_claim_verification"
+    },
+    {
+      "id": "task_environments",
+      "parent_id": "simulation",
+      "label": "任务环境与数字场景",
+      "en": "Task Environments",
+      "summary": "导航、操作、家庭活动及可交互场景",
+      "source_ids": [
+        "survey",
+        "habitat",
+        "behavior",
+        "safecontrol"
+      ],
+      "status": "proposed",
+      "source_scope": "topic_orientation_and_further_reading_not_individual_claim_verification"
+    },
+    {
+      "id": "domain_randomization",
+      "parent_id": "simulation",
+      "label": "域随机化与系统辨识",
+      "en": "Domain Randomization & System Identification",
+      "summary": "缩小动力学、外观和传感器差异",
+      "source_ids": [
+        "survey",
+        "habitat",
+        "behavior",
+        "safecontrol"
+      ],
+      "status": "proposed",
+      "source_scope": "topic_orientation_and_further_reading_not_individual_claim_verification"
+    },
+    {
+      "id": "sim_to_real",
+      "parent_id": "simulation",
+      "label": "仿真到现实与现实到仿真",
+      "en": "Sim-to-Real & Real-to-Sim",
+      "summary": "迁移验证、真实失败与仿真修正",
+      "source_ids": [
+        "survey",
+        "habitat",
+        "behavior",
+        "safecontrol"
+      ],
+      "status": "proposed",
+      "source_scope": "topic_orientation_and_further_reading_not_individual_claim_verification"
+    },
+    {
+      "id": "evaluation",
+      "parent_id": null,
+      "label": "评测、安全与落地",
+      "en": "Evaluation, Safety & Deployment",
+      "question": "怎样证明方法有效、知道它何时失效，并判断是否适合真实使用。",
+      "band": "support",
+      "source_ids": [
+        "behavior",
+        "safecontrol",
+        "hri",
+        "lerobot"
+      ],
+      "status": "proposed",
+      "source_scope": "topic_orientation_and_further_reading_not_individual_claim_verification"
+    },
+    {
+      "id": "benchmarks",
+      "parent_id": "evaluation",
+      "label": "基准、协议与指标",
+      "en": "Benchmarks & Metrics",
+      "summary": "成功率、误差、时延、能耗与统一任务协议",
+      "source_ids": [
+        "behavior",
+        "safecontrol",
+        "hri",
+        "lerobot"
+      ],
+      "status": "proposed",
+      "source_scope": "topic_orientation_and_further_reading_not_individual_claim_verification"
+    },
+    {
+      "id": "generalization_tests",
+      "parent_id": "evaluation",
+      "label": "泛化、鲁棒性与复现",
+      "en": "Generalization & Robustness",
+      "summary": "未见环境、扰动、消融、种子和统计不确定性",
+      "source_ids": [
+        "behavior",
+        "safecontrol",
+        "hri",
+        "lerobot"
+      ],
+      "status": "proposed",
+      "source_scope": "topic_orientation_and_further_reading_not_individual_claim_verification"
+    },
+    {
+      "id": "robot_safety",
+      "parent_id": "evaluation",
+      "label": "安全约束与失败分析",
+      "en": "Robot Safety & Failure Analysis",
+      "summary": "约束违反、接管、失效模式与风险边界",
+      "source_ids": [
+        "behavior",
+        "safecontrol",
+        "hri",
+        "lerobot"
+      ],
+      "status": "proposed",
+      "source_scope": "topic_orientation_and_further_reading_not_individual_claim_verification"
+    },
+    {
+      "id": "deployment_evidence",
+      "parent_id": "evaluation",
+      "label": "产品与部署证据",
+      "en": "Deployment Evidence",
+      "summary": "真实运行、厂商演示、自主程度和维护成本",
+      "source_ids": [
+        "behavior",
+        "safecontrol",
+        "hri",
+        "lerobot"
+      ],
+      "status": "proposed",
+      "source_scope": "topic_orientation_and_further_reading_not_individual_claim_verification"
+    }
+  ],
+  "edges": [
+    {
+      "from": "embodiment",
+      "to": "perception",
+      "type": "provides_signals",
+      "label": "传感器与身体决定可观测信号",
+      "source_ids": [
+        "morphology",
+        "neuralfeels"
+      ],
+      "interpretation": "editorial_mapping",
+      "status": "proposed"
+    },
+    {
+      "from": "perception",
+      "to": "world_models",
+      "type": "updates",
+      "label": "观测形成地图、状态和预测模型",
+      "source_ids": [
+        "survey",
+        "neuralfeels"
+      ],
+      "interpretation": "editorial_mapping",
+      "status": "proposed"
+    },
+    {
+      "from": "world_models",
+      "to": "planning",
+      "type": "informs",
+      "label": "空间与物理表征约束任务决策",
+      "source_ids": [
+        "survey",
+        "saycan"
+      ],
+      "interpretation": "editorial_mapping",
+      "status": "proposed"
+    },
+    {
+      "from": "planning",
+      "to": "control",
+      "type": "commands",
+      "label": "计划需转成可执行动作",
+      "source_ids": [
+        "manipulation",
+        "saycan"
+      ],
+      "interpretation": "editorial_mapping",
+      "status": "proposed"
+    },
+    {
+      "from": "control",
+      "to": "perception",
+      "type": "changes_observations",
+      "label": "动作和接触产生新观测，形成闭环",
+      "source_ids": [
+        "neuralfeels",
+        "manipulation"
+      ],
+      "interpretation": "editorial_mapping",
+      "status": "proposed"
+    },
+    {
+      "from": "learning",
+      "to": "perception",
+      "type": "improves",
+      "label": "学习感知表征",
+      "source_ids": [
+        "sparsh"
+      ],
+      "interpretation": "editorial_mapping",
+      "status": "proposed"
+    },
+    {
+      "from": "learning",
+      "to": "control",
+      "type": "learns_policies",
+      "label": "示范和交互训练动作策略",
+      "source_ids": [
+        "diffusion",
+        "octo"
+      ],
+      "interpretation": "editorial_mapping",
+      "status": "proposed"
+    },
+    {
+      "from": "data",
+      "to": "learning",
+      "type": "trains",
+      "label": "带版本的数据用于训练",
+      "source_ids": [
+        "openx",
+        "openvla"
+      ],
+      "interpretation": "editorial_mapping",
+      "status": "proposed"
+    },
+    {
+      "from": "simulation",
+      "to": "learning",
+      "type": "trains_and_tests",
+      "label": "仿真提供交互和可重复实验",
+      "source_ids": [
+        "habitat",
+        "safecontrol"
+      ],
+      "interpretation": "editorial_mapping",
+      "status": "proposed"
+    },
+    {
+      "from": "evaluation",
+      "to": "control",
+      "type": "evaluates",
+      "label": "验证控制性能及安全边界",
+      "source_ids": [
+        "safecontrol"
+      ],
+      "interpretation": "editorial_mapping",
+      "status": "proposed"
+    },
+    {
+      "from": "interaction",
+      "to": "planning",
+      "type": "specifies_goals",
+      "label": "人类指令与协作改变目标和计划",
+      "source_ids": [
+        "hri",
+        "saycan"
+      ],
+      "interpretation": "editorial_mapping",
+      "status": "proposed"
+    },
+    {
+      "from": "tactile_perception",
+      "to": "dexterous_manipulation",
+      "type": "supports",
+      "label": "触觉提供接触和遮挡下的操作信息",
+      "source_ids": [
+        "neuralfeels"
+      ],
+      "interpretation": "editorial_mapping",
+      "status": "proposed"
+    },
+    {
+      "from": "multimodal_fusion",
+      "to": "state_estimation",
+      "type": "supports",
+      "label": "融合降低单一模态的歧义",
+      "source_ids": [
+        "neuralfeels"
+      ],
+      "interpretation": "editorial_mapping",
+      "status": "proposed"
+    },
+    {
+      "from": "tactile_perception",
+      "to": "self_supervised",
+      "type": "method_connection",
+      "label": "触觉表征可通过自监督学习",
+      "source_ids": [
+        "sparsh"
+      ],
+      "interpretation": "editorial_mapping",
+      "status": "proposed"
+    }
+  ],
+  "sources": [
+    {
+      "id": "survey",
+      "title": "Aligning Cyber Space with Physical World: A Comprehensive Survey on Embodied AI",
+      "url": "https://arxiv.org/html/2407.06886v3",
+      "type": "preprint",
+      "access": "full_text_available",
+      "note": "综述框架依据；本文分类是网站编辑提案，不冒称论文原分类。",
+      "checked_on": "2026-11-08",
+      "read_scope": "目录、摘要和相关结构；未全文精读"
+    },
+    {
+      "id": "morphology",
+      "title": "Embodied Intelligence: A Synergy of Morphology, Action, Perception and Learning",
+      "url": "https://doi.org/10.1145/3717059",
+      "type": "journal",
+      "access": "abstract",
+      "note": "已核实题名、摘要和出版记录；未据摘要外推全文细节。",
+      "checked_on": "2026-11-08",
+      "read_scope": "摘要与书目记录；不能支持未读取的实验细节"
+    },
+    {
+      "id": "manipulation",
+      "title": "Robotic Manipulation — MIT course notes",
+      "url": "https://manipulation.mit.edu/",
+      "type": "course",
+      "access": "web_text",
+      "note": "用于概念、规划、控制的基础学习。",
+      "checked_on": "2026-11-08",
+      "read_scope": "官方项目页、文档或 README；属于作者提供的一手说明，未独立复现"
+    },
+    {
+      "id": "underactuated",
+      "title": "Underactuated Robotics — Introduction",
+      "url": "https://underactuated.csail.mit.edu/intro.html",
+      "type": "course",
+      "access": "web_text",
+      "note": "用于动力学、优化与反馈控制。",
+      "checked_on": "2026-11-08",
+      "read_scope": "官方项目页、文档或 README；属于作者提供的一手说明，未独立复现"
+    },
+    {
+      "id": "habitat",
+      "title": "AI Habitat",
+      "url": "https://aihabitat.org/",
+      "type": "project",
+      "access": "web_text",
+      "note": "导航、主动感知、仿真和任务评测。",
+      "checked_on": "2026-11-08",
+      "read_scope": "官方项目页、文档或 README；属于作者提供的一手说明，未独立复现"
+    },
+    {
+      "id": "neuralfeels",
+      "title": "Neural feels with neural fields: Visuo-tactile perception for in-hand manipulation",
+      "url": "https://arxiv.org/abs/2312.13469",
+      "type": "paper_record",
+      "access": "abstract",
+      "note": "本文核查了摘要及作者官方代码说明，尚未全文精读。",
+      "checked_on": "2026-11-08",
+      "read_scope": "摘要与书目记录；不能支持未读取的实验细节"
+    },
+    {
+      "id": "neuralfeels_code",
+      "title": "NeuralFeels official repository",
+      "url": "https://github.com/facebookresearch/neuralfeels",
+      "type": "code",
+      "access": "readme",
+      "note": "代码说明标注 Science Robotics, Nov 2024；预印本与期刊记录需关联。",
+      "checked_on": "2026-11-08",
+      "read_scope": "官方项目页、文档或 README；属于作者提供的一手说明，未独立复现"
+    },
+    {
+      "id": "sparsh",
+      "title": "Sparsh: Self-supervised touch representations for vision-based tactile sensing",
+      "url": "https://github.com/facebookresearch/sparsh",
+      "type": "code",
+      "access": "readme",
+      "note": "CoRL 2024；仓库页面显示 2026-04-01 归档。研究可读，运行需检查依赖。",
+      "checked_on": "2026-11-08",
+      "read_scope": "官方项目页、文档或 README；属于作者提供的一手说明，未独立复现"
+    },
+    {
+      "id": "saycan",
+      "title": "Do As I Can, Not As I Say: Grounding Language in Robotic Affordances",
+      "url": "https://say-can.github.io/",
+      "type": "project",
+      "access": "web_text",
+      "note": "语言任务规划与技能可执行性。",
+      "checked_on": "2026-11-08",
+      "read_scope": "官方项目页、文档或 README；属于作者提供的一手说明，未独立复现"
+    },
+    {
+      "id": "rt1",
+      "title": "RT-1: Robotics Transformer for Real-World Control at Scale",
+      "url": "https://robotics-transformer1.github.io/",
+      "type": "project",
+      "access": "web_text",
+      "note": "多任务示范到离散动作 token。",
+      "checked_on": "2026-11-08",
+      "read_scope": "官方项目页、文档或 README；属于作者提供的一手说明，未独立复现"
+    },
+    {
+      "id": "rt2",
+      "title": "RT-2: Vision-Language-Action Models Transfer Web Knowledge to Robotic Control",
+      "url": "https://robotics-transformer2.github.io/assets/rt2.pdf",
+      "type": "paper",
+      "access": "full_text_excerpt",
+      "note": "已读取论文关键引言和方法段；非全文精读。",
+      "checked_on": "2026-11-08",
+      "read_scope": "已读取引言中 RT-1 协议继承与方法描述；未完成实验和附录精读"
+    },
+    {
+      "id": "rt2_blog",
+      "title": "RT-2: New model translates vision and language into action",
+      "url": "https://deepmind.google/blog/rt-2-new-model-translates-vision-and-language-into-action/",
+      "type": "research_blog",
+      "access": "web_text",
+      "note": "一手作者解释：复用 RT-1 演示数据和动作离散化。",
+      "checked_on": "2026-11-08",
+      "read_scope": "官方项目页、文档或 README；属于作者提供的一手说明，未独立复现"
+    },
+    {
+      "id": "openx",
+      "title": "Open X-Embodiment: Robotic Learning Datasets and RT-X Models",
+      "url": "https://robotics-transformer-x.github.io/",
+      "type": "project",
+      "access": "web_text",
+      "note": "跨本体机器人数据及 RT-X 训练；不把整集合规模当任一模型训练量。",
+      "checked_on": "2026-11-08",
+      "read_scope": "官方项目页、文档或 README；属于作者提供的一手说明，未独立复现"
+    },
+    {
+      "id": "diffusion",
+      "title": "Diffusion Policy: Visuomotor Policy Learning via Action Diffusion",
+      "url": "https://diffusion-policy.cs.columbia.edu/",
+      "type": "project",
+      "access": "web_text",
+      "note": "项目页区分 RSS 2023 和 IJRR 2024；结论须保留基准条件。",
+      "checked_on": "2026-11-08",
+      "read_scope": "官方项目页、文档或 README；属于作者提供的一手说明，未独立复现"
+    },
+    {
+      "id": "octo",
+      "title": "Octo: An Open-Source Generalist Robot Policy",
+      "url": "https://octo-models.github.io/",
+      "type": "project",
+      "access": "web_text",
+      "note": "Transformer 与扩散动作头；基于 Open X 数据，官方页列出评测机器人与任务。",
+      "checked_on": "2026-11-08",
+      "read_scope": "官方项目页、文档或 README；属于作者提供的一手说明，未独立复现"
+    },
+    {
+      "id": "openvla",
+      "title": "OpenVLA: An Open-Source Vision-Language-Action Model",
+      "url": "https://openvla.github.io/",
+      "type": "project",
+      "access": "web_text",
+      "note": "官方明确 Prismatic-7B 基座与 Open X 训练数据。",
+      "checked_on": "2026-11-08",
+      "read_scope": "官方项目页、文档或 README；属于作者提供的一手说明，未独立复现"
+    },
+    {
+      "id": "dreamer",
+      "title": "Mastering Diverse Control Tasks through World Models",
+      "url": "https://danijar.com/project/dreamerv3/",
+      "type": "project",
+      "access": "web_text",
+      "note": "世界模型和想象中的策略学习；不可将游戏或仿真结果写成真实机器人证明。",
+      "checked_on": "2026-11-08",
+      "read_scope": "官方项目页、文档或 README；属于作者提供的一手说明，未独立复现"
+    },
+    {
+      "id": "hri",
+      "title": "Human-Robot Interaction — An Introduction, 2nd edition",
+      "url": "https://www.human-robot-interaction.org/",
+      "type": "book",
+      "access": "web_text",
+      "note": "作者站提供章节/PDF；本次只核查介绍。",
+      "checked_on": "2026-11-08",
+      "read_scope": "官方项目页、文档或 README；属于作者提供的一手说明，未独立复现"
+    },
+    {
+      "id": "droid",
+      "title": "DROID: A Large-Scale In-the-Wild Robot Manipulation Dataset",
+      "url": "https://droid-dataset.github.io/",
+      "type": "dataset",
+      "access": "web_text",
+      "note": "真实机器人数据、标定、采集和复现条件。",
+      "checked_on": "2026-11-08",
+      "read_scope": "官方项目页、文档或 README；属于作者提供的一手说明，未独立复现"
+    },
+    {
+      "id": "lerobot",
+      "title": "LeRobot documentation",
+      "url": "https://huggingface.co/docs/lerobot/index",
+      "type": "documentation",
+      "access": "web_text",
+      "note": "硬件接口、记录、数据集、训练及部署工具。",
+      "checked_on": "2026-11-08",
+      "read_scope": "官方项目页、文档或 README；属于作者提供的一手说明，未独立复现"
+    },
+    {
+      "id": "behavior",
+      "title": "BEHAVIOR",
+      "url": "https://behavior.stanford.edu/",
+      "type": "benchmark",
+      "access": "web_text",
+      "note": "家庭活动、长程移动操作；版本和任务子集必须分别记录。",
+      "checked_on": "2026-11-08",
+      "read_scope": "官方项目页、文档或 README；属于作者提供的一手说明，未独立复现"
+    },
+    {
+      "id": "safecontrol",
+      "title": "safe-control-gym",
+      "url": "https://github.com/learnsyslab/safe-control-gym",
+      "type": "code",
+      "access": "readme",
+      "note": "控制、RL、安全约束及扰动的可比较基准。",
+      "checked_on": "2026-11-08",
+      "read_scope": "官方项目页、文档或 README；属于作者提供的一手说明，未独立复现"
+    },
+    {
+      "id": "rss",
+      "title": "Robotics: Science and Systems — Online Proceedings",
+      "url": "https://roboticsproceedings.org/",
+      "type": "proceedings",
+      "access": "web_text",
+      "note": "会议论文一手入口；RSS 此处是会议名，勿误作订阅协议。",
+      "checked_on": "2026-11-08",
+      "read_scope": "官方项目页、文档或 README；属于作者提供的一手说明，未独立复现"
+    },
+    {
+      "id": "pmlr",
+      "title": "Proceedings of the 7th Conference on Robot Learning",
+      "url": "https://proceedings.mlr.press/v229/",
+      "type": "proceedings",
+      "access": "web_text",
+      "note": "正式会议录示例；每日扫描要发现新卷，不能固定只扫 2023。",
+      "checked_on": "2026-11-08",
+      "read_scope": "官方项目页、文档或 README；属于作者提供的一手说明，未独立复现"
+    }
+  ],
+  "evolution": [
+    {
+      "from": "rt1",
+      "to": "rt2",
+      "type": "extends_method_and_data",
+      "label": "沿用 RT-1 机器人示范及离散动作表达，接入预训练视觉语言模型",
+      "source_ids": [
+        "rt2",
+        "rt2_blog"
+      ],
+      "evidence": "作者明确说明，不能写成同一网络简单扩容"
+    },
+    {
+      "from": "rt1",
+      "to": "openx",
+      "type": "extends_training_scope",
+      "label": "RT-1-X 将 RT-1 类架构用于跨本体数据训练",
+      "source_ids": [
+        "openx"
+      ],
+      "evidence": "RT-X 包含 RT-1-X 与 RT-2-X，应在正式库拆为模型子记录"
+    },
+    {
+      "from": "rt2",
+      "to": "openx",
+      "type": "extends_training_scope",
+      "label": "RT-2-X 扩展跨本体训练",
+      "source_ids": [
+        "openx"
+      ],
+      "evidence": "方法谱系"
+    },
+    {
+      "from": "openx",
+      "to": "octo",
+      "type": "training_data",
+      "label": "Octo 使用 Open X 的数据混合",
+      "source_ids": [
+        "octo"
+      ],
+      "evidence": "数据依赖，不代表模型继承"
+    },
+    {
+      "from": "openx",
+      "to": "openvla",
+      "type": "training_data",
+      "label": "OpenVLA 使用 Open X 的数据混合",
+      "source_ids": [
+        "openvla"
+      ],
+      "evidence": "数据依赖，不代表模型继承"
+    },
+    {
+      "from": "diffusion",
+      "to": "octo",
+      "type": "same_method_family",
+      "label": "都属于扩散动作策略路线",
+      "source_ids": [
+        "diffusion",
+        "octo"
+      ],
+      "evidence": "仅以已读项目页支持方法同族；不据此宣称直接代码或架构继承"
+    },
+    {
+      "from": "rt2",
+      "to": "openvla",
+      "type": "same_research_direction",
+      "label": "同属预训练视觉语言模型到动作的路线",
+      "source_ids": [
+        "rt2",
+        "openvla"
+      ],
+      "evidence": "OpenVLA 明确基于 Prismatic，不能画成 RT-2 权重派生"
+    }
+  ]
+}

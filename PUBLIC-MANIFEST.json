@@ -1,0 +1,136 @@
+{
+  "public_only": true,
+  "excluded": [
+    ".runtime",
+    "app/server.py",
+    "learning goals and private notes",
+    "credentials"
+  ],
+  "files": [
+    {
+      "path": ".github/workflows/daily-public.yml",
+      "bytes": 4293,
+      "sha256": "87db3bb55830cdab88d03ee17f122c755a0e96baee56d0102b097dde7cb5ba53"
+    },
+    {
+      "path": ".gitignore",
+      "bytes": 91,
+      "sha256": "a27f7ce5893410eee98d3dec72061a238f9b52b408035c2559fd95075993f9d1"
+    },
+    {
+      "path": "README.md",
+      "bytes": 599,
+      "sha256": "1bcc18f309f6ec747723d39b1551af6d9baad091b1f6384acaa6c96244c231df"
+    },
+    {
+      "path": "app/app.js",
+      "bytes": 41862,
+      "sha256": "8119411387850e6ad61d0ca6062f07be01bdac099f399884042167c32467c134"
+    },
+    {
+      "path": "app/index.html",
+      "bytes": 3492,
+      "sha256": "7324742d8323ce153aff9e308120341d2fe23e21a240abb2597b18ebf5286b03"
+    },
+    {
+      "path": "app/mark.svg",
+      "bytes": 404,
+      "sha256": "5d0711c278da2c91d1a834e055267f1161a2f1b64089ce6679b688175ea8dddf"
+    },
+    {
+      "path": "app/styles.css",
+      "bytes": 21226,
+      "sha256": "0b52a3b8fd68f0ed51aae92ad43ec01a6e6fcbe26af4e0765baaab83e2ac0937"
+    },
+    {
+      "path": "content/abstract-briefs.json",
+      "bytes": 6925,
+      "sha256": "6214dca87c068706ff7b15065bd41be51ea140e8798734cce2d9c58072d2d276"
+    },
+    {
+      "path": "content/domain-overrides.json",
+      "bytes": 45,
+      "sha256": "4f7b51be508b6e44ca9c48db4383279f41eb0c81472846fbb6c30d04347bc170"
+    },
+    {
+      "path": "content/domains.json",
+      "bytes": 45884,
+      "sha256": "f1f491dcdd5fbf8f5b2fb62c6734cd0debb9c4a2950f2ac08d6a84d9908e4a30"
+    },
+    {
+      "path": "content/reviews.json",
+      "bytes": 26803,
+      "sha256": "4a590ce63ee7f2acdf6106e2be16327b6bcc67d3d1a5c30389120d19392840c4"
+    },
+    {
+      "path": "pipeline/README.md",
+      "bytes": 9235,
+      "sha256": "0b46054469f8b85f8b98315d72657525466b220ff880df9696250fcce08ed805"
+    },
+    {
+      "path": "pipeline/aihot-source-template.json",
+      "bytes": 876,
+      "sha256": "cb5a83f00ac88f7975c971f2f32e47c1ebc55fc8a5de3c7c52a2a22e11b8888f"
+    },
+    {
+      "path": "pipeline/bootstrap-state.json",
+      "bytes": 386637,
+      "sha256": "dac0b14c44469ced88ef2e143a082d3a7d53f9a579814fe1ca70c0ade0872a7d"
+    },
+    {
+      "path": "pipeline/cli.py",
+      "bytes": 29236,
+      "sha256": "5b6286f5ff46ec18e5c7e5c9660827879a01df906c7aa7740af745fb2215202f"
+    },
+    {
+      "path": "pipeline/editorial-overrides.json",
+      "bytes": 884,
+      "sha256": "b2d4db0e8b4f325b75c861c94405bab7abeca2f290c847148daad3bf1fabee57"
+    },
+    {
+      "path": "pipeline/sources.json",
+      "bytes": 909,
+      "sha256": "2745e3ba8ac84a8a3f811f6a35b8c0116a654f5bbde6c8645e2f7e15b63edde8"
+    },
+    {
+      "path": "pipeline/test_pipeline.py",
+      "bytes": 5921,
+      "sha256": "a188c64af83247edf3025b97d3f14eab83490e762408927bb206a8b8e280dacb"
+    },
+    {
+      "path": "scripts/DEPLOYMENT.md",
+      "bytes": 7817,
+      "sha256": "c1c77aaa0ef463c07b924aaa1b7da804c3fd1aa56f85816d9dde2f4cd6f5da74"
+    },
+    {
+      "path": "scripts/build_public.py",
+      "bytes": 6748,
+      "sha256": "d20f873166ee68e1811b52c28852f9fc8a4143fecf415618c4f71cd3548eafad"
+    },
+    {
+      "path": "scripts/public_state.py",
+      "bytes": 8361,
+      "sha256": "a91f798974ae483f2c79e304c9e9f06e1c55b21faa5bf3bd4cdf0d557f8aeca8"
+    },
+    {
+      "path": "scripts/stage_public_repo.py",
+      "bytes": 4137,
+      "sha256": "0e11fe9d9f1c77ac1deaa51eac4341e583990cba05009b27c51e86e09f5777bc"
+    },
+    {
+      "path": "scripts/test_cloud.py",
+      "bytes": 5121,
+      "sha256": "22302fdfc18ab8cb88cce331cefb4fcdeed8d2bf46ba5dea56f64d09353c1464"
+    },
+    {
+      "path": "方案/知识框架.json",
+      "bytes": 42619,
+      "sha256": "83526cc4a89557e94b8801593d2b1d1538f3f416b7ec0bb89a9e956ed205723a"
+    },
+    {
+      "path": "核查/check_public_sources.py",
+      "bytes": 6378,
+      "sha256": "df70d5b3aa5a0d98cc60c15049203588d81052df5002f5521aade683515b7b71"
+    }
+  ]
+}

@@ -1,0 +1,115 @@
+name: Daily public research and Pages
+
+on:
+  schedule:
+    # UTC 23:17 = next day 07:17 Asia/Taipei (UTC+8).
+    - cron: '17 23 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: embodied-public-publisher
+  cancel-in-progress: false
+
+jobs:
+  collect-build:
+    # This zero-cost route requires a public repository and a standard Linux runner.
+    if: github.event.repository.private == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    outputs:
+      ingestion_outcome: ${{ steps.ingest.outcome }}
+    steps:
+      - uses: actions/checkout@v6
+      - name: Verify public adapter and bundle boundaries
+        run: |
+          python3 -m unittest discover -s pipeline -v
+          python3 -m unittest discover -s scripts -p 'test_cloud.py' -v
+      - name: Restore persistent public database
+        id: restore
+        run: |
+          python3 scripts/public_state.py pull
+          python3 scripts/public_state.py apply-editorial
+      - name: Check official sources and preserve individual failures
+        id: ingest
+        continue-on-error: true
+        run: python3 pipeline/cli.py ingest
+      - name: Save durable public state before publication
+        run: python3 scripts/public_state.py push
+      - name: Build public assets with observed cloud status
+        run: |
+          python3 pipeline/cli.py export --out pipeline/public-feed.json
+          python3 scripts/build_public.py --out _site --cloud
+      - name: Upload only the public website
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+          retention-days: 1
+
+  deploy:
+    needs: collect-build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publish static public knowledge
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+  source-health:
+    needs: [collect-build, deploy]
+    if: always() && needs.collect-build.result == 'success'
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - name: Mark any partial collection failure after publishing honest status
+        env:
+          INGESTION_OUTCOME: ${{ needs.collect-build.outputs.ingestion_outcome }}
+        run: |
+          if [ "$INGESTION_OUTCOME" != "success" ]; then
+            echo "At least one source failed. Existing content and failed-source status were preserved. Inspect the collection job and Sources page."
+            exit 1
+          fi
+
+  cleanup-pages-artifact:
+    needs: [collect-build, deploy]
+    if: always() && github.event.repository.private == false
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - name: Delete only this run's Pages transfer artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import json, os, urllib.request, urllib.error
+          repo = os.environ['GITHUB_REPOSITORY']
+          run = os.environ['GITHUB_RUN_ID']
+          base = 'https://api.github.com/repos/' + repo
+          headers = {'Authorization': 'Bearer ' + os.environ['GH_TOKEN'], 'Accept': 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28'}
+          request = urllib.request.Request(base + '/actions/runs/' + run + '/artifacts?per_page=100', headers=headers)
+          with urllib.request.urlopen(request, timeout=30) as response:
+              artifacts = json.load(response)['artifacts']
+          removed = 0
+          for artifact in artifacts:
+              if artifact['name'] != 'github-pages' or not isinstance(artifact['id'], int):
+                  continue
+              request = urllib.request.Request(base + '/actions/artifacts/' + str(artifact['id']), headers=headers, method='DELETE')
+              try:
+                  urllib.request.urlopen(request, timeout=30).close()
+                  removed += 1
+              except urllib.error.HTTPError as error:
+                  if error.code != 404:
+                      raise RuntimeError('Could not remove this run Pages artifact; HTTP ' + str(error.code)) from None
+          print('Removed this run Pages artifacts:', removed)
+          PY

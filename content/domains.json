@@ -1,0 +1,701 @@
+[
+  {
+    "id": "embodiment",
+    "title": "本体与传感",
+    "status": "proposed",
+    "intro": "具身智能首先受身体约束：关节能转到哪里、夹爪能否包住物体、电机能输出多大力，以及传感器能看到或触到什么，都会改变一个任务是否可解。本体设计研究这些机械、材料和感知条件怎样共同服务于行动。传感器也不会直接给出完整的世界状态：摄像头输出图像，编码器记录关节位置，力传感器测量特定方向的载荷；光学触觉则把弹性体的接触形变转成图像。随后仍需标定、同步和估计。选型时应先明确任务需要的量、量程与频率，再讨论分辨率和模型大小。这个领域连接机械设计、感知算法与控制，解释了为什么同一套策略换一只手或一种触觉传感器后，往往需要重新适配。",
+    "example": "例如夹起薄塑料杯：相机估计杯口，夹爪接近；指尖接触信号出现后，控制器逐步加力；发现滑移便调整握力，同时限制挤压。杯子是否变形、手指是否打滑，反过来检验夹爪材料与传感器位置是否合适。",
+    "core_questions": [
+      "身体的自由度、柔顺性和驱动方式，怎样决定可完成的动作？",
+      "任务需要测量的是接触位置、形变、力，还是它们的变化？",
+      "标定漂移、通信延迟和机械磨损怎样影响整个闭环？"
+    ],
+    "routes": [
+      {
+        "name": "刚性机构与精确驱动",
+        "idea": "用明确的连杆、关节和编码器建立可计算的运动关系。",
+        "strength": "适合重复定位、轨迹跟踪和结构清楚的工业任务。",
+        "limit": "复杂接触仍受摩擦、装配误差和对象形变影响。"
+      },
+      {
+        "name": "柔顺与形态设计",
+        "idea": "利用弹性材料、欠驱动或被动结构，让身体承担部分适应过程。",
+        "strength": "面对形状变化时，可减少对精确建模和主动控制的依赖。",
+        "limit": "形变状态难测，重复精度与可预测性需要单独验证。"
+      },
+      {
+        "name": "多模态传感配置",
+        "idea": "联合视觉、触觉、关节与力觉，并统一坐标和时间。",
+        "strength": "不同模态可补充遮挡、接触和自身运动的信息。",
+        "limit": "增加信号不等于增加有效信息，标定和同步成本也会上升。"
+      }
+    ],
+    "history": [
+      {
+        "year": 2009,
+        "title": "Retrographic sensing for the measurement of surface texture and shape",
+        "source_url": "https://people.csail.mit.edu/kimo/publications/retrographic/",
+        "relation": "光学触觉代表节点：通过弹性表面形变和光照重建接触形状；不是机器人整体智能方案。"
+      },
+      {
+        "year": 2020,
+        "title": "DIGIT: A Novel Design for a Low-Cost Compact High-Resolution Tactile Sensor with Application to In-Hand Manipulation",
+        "source_url": "https://github.com/facebookresearch/digit-design",
+        "relation": "同属视觉式触觉路线，强调可装入手指的设计与制造；此处不宣称直接复用前项代码。"
+      },
+      {
+        "year": 2025,
+        "title": "Embodied Intelligence: A Synergy of Morphology, Action, Perception and Learning",
+        "source_url": "https://doi.org/10.1145/3717059",
+        "relation": "综述从形态、动作、感知和学习的协同组织领域；这是分类参考，并非对前两项的性能改进。"
+      }
+    ],
+    "open_problems": [
+      "如何在触觉分辨率、耐久性、体积、布线和维护成本之间取得适合任务的平衡？",
+      "同型传感器之间及材料老化后的差异，能否通过少量标定稳定补偿？",
+      "机器人形态和策略共同优化后，收益能否迁移到不同任务与环境？"
+    ],
+    "prerequisites": [
+      "关节、自由度与坐标系的基本概念",
+      "传感器量程、采样率、噪声和标定",
+      "力、力矩、刚度与简单电机控制"
+    ],
+    "source_urls": [
+      "https://people.csail.mit.edu/kimo/publications/retrographic/",
+      "https://github.com/facebookresearch/digit-design",
+      "https://doi.org/10.1145/3717059",
+      "https://huggingface.co/docs/lerobot/index"
+    ],
+    "reading_scope": "依据作者项目说明、官方硬件仓库和综述摘要整理。未完成机械设计文件审查或传感器实测；例子用于解释闭环，不是已完成的实验。"
+  },
+  {
+    "id": "perception",
+    "title": "感知与状态估计",
+    "status": "proposed",
+    "intro": "机器人面对的是不断变化、只能局部观察的世界。感知把原始信号转换为与任务有关的描述，例如杯子的边缘、物体姿态或指尖的接触区域；状态估计则结合历史观测和运动规律，判断当前最可能处于什么状态。一次检测不能代替持续估计：相机可能被手遮住，触觉只覆盖接触处，关节编码器也不直接告诉我们物体是否滑动。研究重点因此不只是识别准确率，还包括时间一致性、误差与不确定性，以及信息对后续行动是否有用。视觉、触觉和本体感觉可以相互补充，但只有在时间、坐标和噪声假设合理时，融合才可能可靠。主动感知进一步让机器人选择下一次看哪里、怎样触碰，以消除当前任务中的歧义。",
+    "example": "设想手内转动物体：视觉先提供整体轮廓，触觉补充被手指遮住的局部接触，关节位置约束手指所在的位置；估计器持续更新物体姿态。若不确定性增大，机器人可放慢动作或改变接触，获得新观测后再继续。",
+    "core_questions": [
+      "当前任务真正需要估计哪些状态，哪些信息可以忽略？",
+      "不同传感器互相矛盾或某一模态失效时，应该相信谁？",
+      "更准确的离线识别，是否真的改善了闭环任务表现？"
+    ],
+    "routes": [
+      {
+        "name": "几何建模与概率估计",
+        "idea": "利用投影、运动模型和滤波或优化，把多时刻观测组合起来。",
+        "strength": "状态和误差来源较清楚，便于利用物理约束。",
+        "limit": "依赖标定与模型假设，弱纹理、形变和异常接触会带来困难。"
+      },
+      {
+        "name": "学习式感知与表征",
+        "idea": "从数据学习图像或触觉信号到任务特征、姿态与属性的映射。",
+        "strength": "能处理复杂外观，并利用预训练减少部分标注需求。",
+        "limit": "跨传感器、材质和环境的泛化需要独立测试。"
+      },
+      {
+        "name": "多模态与主动感知",
+        "idea": "融合互补信号，并通过移动、触碰或换视角获取缺失信息。",
+        "strength": "有机会解决静态单一观测无法判断的歧义。",
+        "limit": "动作本身耗时且可能扰动物体，感知收益需要与任务代价比较。"
+      }
+    ],
+    "history": [
+      {
+        "year": 2020,
+        "title": "ORB-SLAM3: An Accurate Open-Source Library for Visual, Visual-Inertial and Multi-Map SLAM",
+        "source_url": "https://arxiv.org/abs/2007.11898",
+        "relation": "视觉与惯性状态估计的代表工作，使用几何优化；与触觉学习是不同技术路线。"
+      },
+      {
+        "year": 2023,
+        "title": "Neural feels with neural fields: Visuo-tactile perception for in-hand manipulation",
+        "source_url": "https://arxiv.org/abs/2312.13469",
+        "relation": "此年为预印本首次提交；把视觉、触觉与本体感觉用于形状和姿态估计，官方代码另标注2024年期刊发表。"
+      },
+      {
+        "year": 2024,
+        "title": "Sparsh: Self-supervised touch representations for vision-based tactile sensing",
+        "source_url": "https://github.com/facebookresearch/sparsh",
+        "relation": "关注自监督触觉表征及下游任务；不是 NeuralFeels 的后续版本，也不能直接替代其几何估计系统。"
+      }
+    ],
+    "open_problems": [
+      "遇到从未见过的材质或传感器，模型能否知道自己的估计已不可靠？",
+      "如何对齐不同频率、不同接触范围和存在延迟的多模态信号？",
+      "主动探索如何减少歧义，同时避免把物体推走或产生危险接触？"
+    ],
+    "prerequisites": [
+      "相机投影、坐标变换与三维姿态",
+      "概率、条件概率和最小二乘直觉",
+      "神经网络训练、数据划分与误差指标"
+    ],
+    "source_urls": [
+      "https://arxiv.org/abs/2007.11898",
+      "https://arxiv.org/abs/2312.13469",
+      "https://github.com/facebookresearch/neuralfeels",
+      "https://github.com/facebookresearch/sparsh"
+    ],
+    "reading_scope": "已核查论文摘要、NeuralFeels与Sparsh官方README，未逐项复核论文附录及全部实验。Sparsh仓库显示2026年4月归档；可作历史研究资料，运行兼容性未验证。"
+  },
+  {
+    "id": "world_models",
+    "title": "世界表征与预测",
+    "status": "proposed",
+    "intro": "感知描述当前观测，世界表征把这些观测组织成能跨时间使用的记忆，预测模型则回答“如果采取这个动作，接下来可能发生什么”。三者常被放在一起讨论，却不能混为一谈：三维重建可以很好地呈现场景，但未必知道推一下杯子会怎样；能生成连贯视频的模型，也未必能根据机器人的具体控制量准确预测接触。对具身任务有用的表征，需要保留位置、物体关系、可操作性或动力学等相关信息，并处理没有被观察到的部分。模型可用于规划前的试算，也可给学习策略提供训练信号。评价它时要同时看预测误差和实际决策效果，尤其关注长时间预测中误差怎样累积，以及机器人会不会利用模型的错误获得虚假的高回报。",
+    "example": "机器人准备把桌上的盒子推到目标区：空间地图说明障碍在哪里，物体表征记录盒子的几何，动作条件模型预测不同推力和方向的结果；规划器选一段动作执行，再用新图像修正模型。预测偏差大时，应缩短试算范围或重新估计。",
+    "core_questions": [
+      "为了当前行动，必须记住哪些几何、语义与物理信息？",
+      "模型预测的是看起来合理的画面，还是由动作造成的状态变化？",
+      "怎样判断模型可以支持多长时间、哪些条件下的规划？"
+    ],
+    "routes": [
+      {
+        "name": "显式地图与对象关系",
+        "idea": "用占据地图、物体状态或场景图存储可查询的结构。",
+        "strength": "便于定位、约束检查和解释任务前提。",
+        "limit": "动态物体、遮挡与开放类别会使维护和更新更复杂。"
+      },
+      {
+        "name": "神经场与连续场景表示",
+        "idea": "用神经网络表示空间中的几何、外观或其他属性。",
+        "strength": "能从多次观测融合细节，支持连续位置查询。",
+        "limit": "重建质量不自动等于可用于接触的物理准确性。"
+      },
+      {
+        "name": "动作条件的潜在动力学",
+        "idea": "在压缩状态中预测动作后果，并在模型内部评估策略。",
+        "strength": "可减少部分真实交互，支持基于预测的决策。",
+        "limit": "长程误差和分布外状态可能误导规划，需要现实反馈。"
+      }
+    ],
+    "history": [
+      {
+        "year": 2018,
+        "title": "World Models",
+        "source_url": "https://worldmodels.github.io/",
+        "relation": "以压缩表征、时序模型和控制器研究在模型内学习；实验环境不能等同真实机器人部署。"
+      },
+      {
+        "year": 2020,
+        "title": "Dream to Control: Learning Behaviors by Latent Imagination",
+        "source_url": "https://danijar.com/project/dreamer/",
+        "relation": "代表在潜在动态模型中学习行为的路线；与前项问题相近，此处不据时间先后宣称代码继承。"
+      },
+      {
+        "year": 2020,
+        "title": "NeRF: Representing Scenes as Neural Radiance Fields for View Synthesis",
+        "source_url": "https://www.matthewtancik.com/nerf",
+        "relation": "连续场景表示的代表工作，核心目标是视角合成；它不是动作条件的机器人动力学模型。"
+      }
+    ],
+    "open_problems": [
+      "图像、物体接触和受力信息怎样共同约束预测，避免只有外观合理？",
+      "面对新物体或长时间遮挡，记忆何时应保留、修正或遗忘？",
+      "如何评估模型对规划真正有帮助，而不是只在像素指标上更好？"
+    ],
+    "prerequisites": [
+      "状态、动作、转移与部分可观测性的概念",
+      "三维表示、相机几何与基本神经网络",
+      "模型预测误差、分布偏移与闭环反馈"
+    ],
+    "source_urls": [
+      "https://worldmodels.github.io/",
+      "https://danijar.com/project/dreamer/",
+      "https://www.matthewtancik.com/nerf",
+      "https://danijar.com/project/dreamerv3/"
+    ],
+    "reading_scope": "依据作者项目页、摘要与方法概要组织概念和路线。没有全文精读全部模型或复现实验；视频生成、场景重建和物理预测在此明确分开。"
+  },
+  {
+    "id": "planning",
+    "title": "任务规划与推理",
+    "status": "proposed",
+    "intro": "“把杯子放进柜子”看似一句简单指令，却涉及确认目标、打开柜门、选择抓取姿态、检查路径，以及判断杯子是否真的放稳。任务规划关心做哪些步骤、按什么顺序；运动规划关心身体怎样在几何与动力学约束下完成其中一步。两层相互影响：逻辑上可行的抓取，可能因为手臂够不到而无法执行；一次失败又可能改变物体位置，使原计划失效。语言模型提供任务常识和指令理解，但文字合理并不意味着机器人具备对应技能。因此需要把提议与实际场景、技能可执行性、碰撞检查和执行反馈连接。导航、探索与长程操作都依赖这一过程，评价时必须区分生成了正确步骤、单步执行成功和整个任务最终完成。",
+    "example": "例如整理桌面：先识别杯子和柜门状态，计划开门、抓取、搬运、放置；若规划器发现抓取姿态与柜门冲突，便换抓取方式。执行后相机检测杯子仍在夹爪中，系统应重新放置，而不是仅凭已发出指令就记录成功。",
+    "core_questions": [
+      "如何把含糊目标转为可检查的子目标与完成条件？",
+      "逻辑步骤、几何可达性和技能成功概率怎样联合考虑？",
+      "环境改变或动作失败后，哪些部分要重新规划？"
+    ],
+    "routes": [
+      {
+        "name": "符号规划与技能图",
+        "idea": "用状态、前提和效果描述动作，搜索满足目标的步骤。",
+        "strength": "过程清楚，可检查计划依赖和执行条件。",
+        "limit": "开放世界中的状态和动作规则难以完整人工列出。"
+      },
+      {
+        "name": "任务与运动联合规划",
+        "idea": "在离散任务选择中反复调用几何采样、优化和可行性检查。",
+        "strength": "把看似合理但身体无法完成的步骤排除。",
+        "limit": "搜索开销较大，对几何和接触模型的质量敏感。"
+      },
+      {
+        "name": "语言驱动的有依据规划",
+        "idea": "让语言模型提出步骤，再用场景表示和技能模型筛选并监测执行。",
+        "strength": "便于理解自然语言目标和组合已有技能。",
+        "limit": "仍可能遗漏约束，必须区分语言推理与可执行证明。"
+      }
+    ],
+    "history": [
+      {
+        "year": 2020,
+        "title": "Integrated Task and Motion Planning",
+        "source_url": "https://arxiv.org/abs/2010.01083",
+        "relation": "综述预印本梳理离散任务与连续运动的联合求解；用于理解规划问题，不是某一新机器人系统。"
+      },
+      {
+        "year": 2022,
+        "title": "Do As I Can, Not As I Say: Grounding Language in Robotic Affordances",
+        "source_url": "https://say-can.github.io/",
+        "relation": "SayCan将语言层面的合理性与已有技能可执行性连接，是一种落地方式，不覆盖所有运动约束。"
+      },
+      {
+        "year": 2023,
+        "title": "SayPlan: Grounding Large Language Models using 3D Scene Graphs for Scalable Robot Task Planning",
+        "source_url": "https://proceedings.mlr.press/v229/rana23a.html",
+        "relation": "以三维场景图组织大场景规划；与SayCan相关但并非仅凭名称或时间就能认定的直接升级。"
+      }
+    ],
+    "open_problems": [
+      "在未知对象和未知状态下，规划器怎样发现自己缺少必要信息？",
+      "如何在长程任务中平衡重规划频率、模型调用时间与动作响应？",
+      "计划看似完成但实际目标未实现时，怎样可靠识别并恢复？"
+    ],
+    "prerequisites": [
+      "图搜索、状态机与动作前提/效果",
+      "机器人可达空间、碰撞与运动规划概念",
+      "概率与技能成功率、自然语言落地的区别"
+    ],
+    "source_urls": [
+      "https://arxiv.org/abs/2010.01083",
+      "https://say-can.github.io/",
+      "https://proceedings.mlr.press/v229/rana23a.html",
+      "https://manipulation.mit.edu/"
+    ],
+    "reading_scope": "已查综述摘要、SayCan作者项目页及SayPlan正式会议记录。没有完整复核各系统的代码、附录和执行实验；案例是规划流程说明。"
+  },
+  {
+    "id": "control",
+    "title": "运动与接触控制",
+    "status": "proposed",
+    "intro": "控制研究怎样让真实身体持续接近目标，而不是只输出一条理想轨迹。机器人每次读取位置、速度或受力信息，计算动作，再观察执行结果；这个反馈循环必须面对电机限制、模型误差、延迟和外界扰动。自由空间运动与接触操作有明显差别：手还没碰到桌面时可以追踪位置，接触后继续强行追踪同一位置可能产生很大作用力。阻抗与柔顺控制因此关心机器人遇到外力时如何让步，足式运动则还需处理接触切换和平衡。学习策略可以生成复杂行为，但通常仍通过底层驱动和反馈环执行。理解控制有助于判断一段演示背后的稳定性、速度和硬件条件，也能看出失败究竟来自感知偏差、规划不可行，还是执行环本身。",
+    "example": "设想机械臂将插销放入孔中：视觉引导它接近，接触后根据侧向力微调姿态，以有限刚度向前推进；若受力异常，控制器退回并重新对齐。只比较插入终点误差，会漏掉过程中是否卡住、过载或需要人工扶正。",
+    "core_questions": [
+      "控制目标是位置、速度、力，还是接触时的动态响应？",
+      "传感延迟与模型误差会不会使反馈振荡或失稳？",
+      "复杂行为中，哪些约束必须由底层控制持续保证？"
+    ],
+    "routes": [
+      {
+        "name": "模型与反馈控制",
+        "idea": "利用运动学、动力学和误差反馈追踪期望状态。",
+        "strength": "结构明确，容易分析误差、约束与稳定性。",
+        "limit": "模型和状态估计不准时，需要鲁棒或自适应处理。"
+      },
+      {
+        "name": "优化与预测控制",
+        "idea": "反复预测短期运动，在线选择满足限制的动作，再滚动重算。",
+        "strength": "适合联合考虑多关节、接触和动作代价。",
+        "limit": "计算时限、接触近似和求解失败需要明确处理。"
+      },
+      {
+        "name": "柔顺与学习式技能",
+        "idea": "用阻抗调节接触响应，或从数据学习动作并与反馈环组合。",
+        "strength": "可适应部分接触误差，表达难以手写的复杂动作。",
+        "limit": "学习行为的适用范围与稳定性不能由单次演示保证。"
+      }
+    ],
+    "history": [
+      {
+        "year": 1984,
+        "title": "Impedance control of industrial robots",
+        "source_url": "https://newmanlab.mit.edu/wp-content/uploads/2017/06/1984-impedance-control-of-industrial-robots.pdf",
+        "relation": "阻抗控制的早期代表文献，关注机器人与环境动态耦合；不是简单把位置控制改成力控制。"
+      },
+      {
+        "year": 1987,
+        "title": "A Unified Approach for Motion and Force Control of Robot Manipulators: The Operational Space Formulation",
+        "source_url": "https://khatib.stanford.edu/publications/pdfs/Khatib_1987_RA.pdf",
+        "relation": "从末端任务空间组织运动与力控制；与阻抗控制相关但不等同，不能视作替代关系。"
+      },
+      {
+        "year": 2019,
+        "title": "Learning agile and dynamic motor skills for legged robots",
+        "source_url": "https://arxiv.org/abs/1901.08652",
+        "relation": "展示仿真学习策略用于真实四足技能的路线；与经典控制形成组合与比较，不意味着传统控制已被淘汰。"
+      }
+    ],
+    "open_problems": [
+      "接触瞬间的摩擦和形变难以准确建模，怎样保持动作可靠？",
+      "学习策略面对未见扰动时，怎样检测异常并转入可控状态？",
+      "高频反馈与较慢的视觉、规划或大模型推理怎样协调？"
+    ],
+    "prerequisites": [
+      "运动学、雅可比与基本动力学",
+      "反馈、稳定性和离散采样的直觉",
+      "力矩、摩擦、刚度和阻尼"
+    ],
+    "source_urls": [
+      "https://newmanlab.mit.edu/wp-content/uploads/2017/06/1984-impedance-control-of-industrial-robots.pdf",
+      "https://khatib.stanford.edu/publications/pdfs/Khatib_1987_RA.pdf",
+      "https://arxiv.org/abs/1901.08652",
+      "https://manipulation.csail.mit.edu/force.html"
+    ],
+    "reading_scope": "核查原作者论文页面/摘要和MIT控制讲义，未推导全部公式，也未复核机器人上的控制参数；内容用于比较控制思路，不构成可直接执行的硬件调参方案。"
+  },
+  {
+    "id": "learning",
+    "title": "机器人学习与基础模型",
+    "status": "proposed",
+    "intro": "机器人学习让系统通过数据改进感知和动作，关键区别在于数据来自哪里、目标如何定义，以及学到的能力怎样被检验。模仿学习从示范中学习“这个观测下专家会怎么做”；强化学习根据任务回报调整行为；自监督学习则利用图像、时间或模态之间的结构学习表征。基础模型把大规模预训练与具体机器人适配连接起来，但参数更多并不自动解决动作频率、接触精度或新硬件的问题。机器人会用自己的动作改变下一次输入，因此离线预测正确也可能在连续执行中积累偏差。阅读工作时，应先确认动作表示、观测历史、训练数据和目标任务，再比较方法。所谓泛化还应具体到新物体、新场景、新指令还是新本体，不能用一个总体成功率概括。",
+    "example": "例如学习收拾积木：先录制人类操作轨迹，用行为克隆学习动作；测试中积木偏离示范位置，误差连续积累。研究者可补采机器人实际遇到的状态、增加恢复示范，或改变训练目标，然后在保留的场景中重新评估，而非只检查训练损失。",
+    "core_questions": [
+      "示范、奖励或自监督信号是否真的表达了期望行为？",
+      "策略失败是因为没见过状态，还是动作表示和执行频率不合适？",
+      "预训练收益能否在相同数据量、硬件和评测条件下成立？"
+    ],
+    "routes": [
+      {
+        "name": "模仿学习与生成式动作策略",
+        "idea": "学习示范条件下的动作分布，必要时一次预测一段动作。",
+        "strength": "适合已有可靠示范、奖励难写的操作任务。",
+        "limit": "示范之外的状态和失败恢复不足时，误差可能持续积累。"
+      },
+      {
+        "name": "强化学习与交互改进",
+        "idea": "通过回报评估动作后果，利用在线或离线经验改进策略。",
+        "strength": "能针对长期结果优化，并探索示范未覆盖的行为。",
+        "limit": "奖励设计、数据效率与真实试错成本是主要约束。"
+      },
+      {
+        "name": "基础模型预训练与适配",
+        "idea": "复用视觉语言或机器人数据中的知识，再适配目标本体和任务。",
+        "strength": "有机会共享语义和跨任务经验，减少重复学习。",
+        "limit": "数据偏差、推理时延与具体动作接口仍需逐项验证。"
+      }
+    ],
+    "history": [
+      {
+        "year": 2011,
+        "title": "A Reduction of Imitation Learning and Structured Prediction to No-Regret Online Learning",
+        "source_url": "https://proceedings.mlr.press/v15/ross11a.html",
+        "relation": "DAgger针对学习策略引起的状态分布变化，说明为何仅在专家数据上预测准确还不够。"
+      },
+      {
+        "year": 2023,
+        "title": "Diffusion Policy: Visuomotor Policy Learning via Action Diffusion",
+        "source_url": "https://diffusion-policy.cs.columbia.edu/",
+        "relation": "扩散动作建模与滚动执行的代表路线；它不是DAgger的后续版本。"
+      },
+      {
+        "year": 2023,
+        "title": "RT-2: Vision-Language-Action Models Transfer Web Knowledge to Robotic Control",
+        "source_url": "https://robotics-transformer2.github.io/assets/rt2.pdf",
+        "relation": "把机器人动作纳入预训练视觉语言模型的输出；与扩散策略是不同的动作建模选择。"
+      },
+      {
+        "year": 2024,
+        "title": "OpenVLA: An Open-Source Vision-Language-Action Model",
+        "source_url": "https://openvla.github.io/",
+        "relation": "官方明确以Prismatic视觉语言模型为基座，并使用Open X数据；不能表述为RT-2权重的开源版本。"
+      }
+    ],
+    "open_problems": [
+      "成功示范很多、失败与恢复样本少时，怎样学到可靠的自我纠正？",
+      "跨机器人数据的动作语义和频率不同，怎样共享知识而不混淆控制？",
+      "如何分清预训练、额外数据和模型结构各自带来的贡献？"
+    ],
+    "prerequisites": [
+      "监督学习、训练/验证/测试划分",
+      "概率分布、梯度下降与神经网络",
+      "马尔可夫决策过程、策略和回报"
+    ],
+    "source_urls": [
+      "https://proceedings.mlr.press/v15/ross11a.html",
+      "https://diffusion-policy.cs.columbia.edu/",
+      "https://robotics-transformer2.github.io/assets/rt2.pdf",
+      "https://openvla.github.io/",
+      "https://octo-models.github.io/"
+    ],
+    "reading_scope": "核查正式论文摘要、作者项目页及RT-2关键方法段。未全面复核训练配方、性能表与附录；这里比较学习范式，不提供跨论文直接排名。"
+  },
+  {
+    "id": "interaction",
+    "title": "人机交互与协作",
+    "status": "proposed",
+    "intro": "与人共同工作的机器人，需要理解的既是任务，也是合作中的信息和控制权。人可能用一句话指定目标，用手柄持续修正动作，也可能通过伸手、停顿或回避表达意图。机器人则需要让自己的下一步足够容易理解，并在不确定时澄清或把控制交回人。完成速度更快不一定意味着体验更好：自动帮助过强，可能让操作者觉得难以纠正；一条最短轨迹，也可能让旁人看不出它要拿哪个物体。人机交互因此同时研究算法、接口与人的行为，评价需要真实参与者和明确任务。多机器人协作进一步涉及通信、角色分配和共同状态，但并不能直接照搬人与机器合作中的信任假设。这个领域把感知、规划与控制连接到实际使用者。",
+    "example": "例如人与机器人一起收桌子：机器人根据指令选择杯子，在接近前用清楚的动作表明目标；人临时指向另一只杯子时，它更新目标或请求确认。若人抓住杯子准备接管，系统应识别交接状态，避免继续争夺控制。",
+    "core_questions": [
+      "机器人怎样区分明确指令、暂时动作和不确定的人类意图？",
+      "何时应该主动帮助，何时应该等待、澄清或交还控制？",
+      "效率、理解程度、工作负担和控制感如何共同评价？"
+    ],
+    "routes": [
+      {
+        "name": "意图理解与可理解行为",
+        "idea": "从语言和动作推断目标，同时用运动、提示和反馈表达自身意图。",
+        "strength": "能减少协作中的误解，使下一步更容易预期。",
+        "limit": "人的背景和习惯不同，单一用户模型容易失效。"
+      },
+      {
+        "name": "共享自主与遥操作",
+        "idea": "把人的输入和机器人的规划能力组合，并保留可纠正的控制接口。",
+        "strength": "可降低操作负担，帮助完成精细或高维动作。",
+        "limit": "帮助策略若误判目标，可能与操作者持续冲突。"
+      },
+      {
+        "name": "协作规划与任务分工",
+        "idea": "根据能力、空间占用和当前进度分配任务，并同步共同状态。",
+        "strength": "适合相互依赖的搬运、装配和多机器人任务。",
+        "limit": "通信延迟、错误状态和成员变化会放大协调难度。"
+      }
+    ],
+    "history": [
+      {
+        "year": 2013,
+        "title": "Legibility and Predictability of Robot Motion",
+        "source_url": "https://publications.ri.cmu.edu/legibility-and-predictability-of-robot-motion",
+        "relation": "区分让人猜到目标的动作与符合预期的动作；说明二者不能直接作为同一指标。"
+      },
+      {
+        "year": 2015,
+        "title": "Shared Autonomy via Hindsight Optimization",
+        "source_url": "https://roboticsproceedings.org/rss11/p32.html",
+        "relation": "把用户目标的不确定性放入共享自主决策；与前项同属协作研究，但不是对其模型的简单延续。"
+      },
+      {
+        "year": 2024,
+        "title": "Human-Robot Interaction — An Introduction, 2nd edition",
+        "source_url": "https://www.human-robot-interaction.org/",
+        "relation": "教学综述节点，连接沟通、设计、评估与伦理；不是新的算法性能里程碑。"
+      }
+    ],
+    "open_problems": [
+      "短时实验中建立的交互习惯，能否适用于长期协作和新使用者？",
+      "机器人怎样表达不确定性，既便于理解又不增加过多操作负担？",
+      "多人或多机器人目标冲突时，怎样保持任务协调和清楚的接管机制？"
+    ],
+    "prerequisites": [
+      "概率推断与部分可观测决策的直觉",
+      "任务规划、反馈与人机接口基本概念",
+      "对照实验、问卷和行为指标的基本方法"
+    ],
+    "source_urls": [
+      "https://publications.ri.cmu.edu/legibility-and-predictability-of-robot-motion",
+      "https://roboticsproceedings.org/rss11/p32.html",
+      "https://www.human-robot-interaction.org/",
+      "https://say-can.github.io/"
+    ],
+    "reading_scope": "已读取原研究机构摘要、RSS正式论文摘要和教材作者介绍；未重新分析用户实验数据。关于控制感与效率的差异来自共享自主论文报告，不外推到所有用户。"
+  },
+  {
+    "id": "data",
+    "title": "机器人数据与研究工具",
+    "status": "proposed",
+    "intro": "机器人数据是一段发生在具体身体和环境中的过程，不能只把它当作图像加动作标签。一个可复用的轨迹需要说明相机和关节如何同步、动作是绝对位置还是增量、控制频率是多少、任务何时开始和结束，以及成功由谁判断。同一动作数值换到另一台机器人上，含义可能完全不同。数据工具负责记录、标定、清洗、转换和追踪版本，研究设计还要考虑场景覆盖、采集者差异与失败样本。训练集和测试集若只随机拆分相邻视频帧，模型可能记住同一条轨迹而看似泛化。大型数据集带来共享经验的机会，也让许可、隐私和来源追踪更重要。本领域的价值是让研究者能够解释模型究竟见过什么，并使别人有条件复现实验。",
+    "example": "例如采集触觉滑移数据：同步保存触觉帧、关节位置和用于产生标签的测量，记录传感器序列与标定版本；按物体或采集场次分离测试集。模型表现异常时，可以追溯是否来自某次标定变化，而不必把所有差异都归因于网络结构。",
+    "core_questions": [
+      "每个字段的物理含义、单位、坐标系和时间关系是否明确？",
+      "数据覆盖的是哪些物体、场景、身体与失败情况？",
+      "训练与评测是否存在轨迹重叠、标签泄漏或版本混用？"
+    ],
+    "routes": [
+      {
+        "name": "人类示范与遥操作采集",
+        "idea": "由人完成任务，记录同步观测、动作和必要的说明。",
+        "strength": "容易获得目标明确的复杂技能样本。",
+        "limit": "人工成本和操作者偏好会影响覆盖范围，失败数据常不足。"
+      },
+      {
+        "name": "自主交互与持续采集",
+        "idea": "让机器人按探索或当前策略运行，积累动作后果与异常。",
+        "strength": "可获得策略实际遇到的状态，帮助发现恢复需求。",
+        "limit": "需要可靠重置、监测和质量筛选，采集数量不代表有效性。"
+      },
+      {
+        "name": "跨本体标准化与工具链",
+        "idea": "统一数据格式与元信息，明确保留各机器人的动作差异。",
+        "strength": "便于共享、检查和构建可复现训练流程。",
+        "limit": "格式一致仍不保证语义一致，转换过程可能丢失关键信息。"
+      }
+    ],
+    "history": [
+      {
+        "year": 2019,
+        "title": "RoboNet: Large-Scale Multi-Robot Learning",
+        "source_url": "https://arxiv.org/abs/1910.11215",
+        "relation": "此年为预印本与CoRL会议年份；探索共享多机器人经验及跨域学习，不等于之后数据集都由其直接派生。"
+      },
+      {
+        "year": 2023,
+        "title": "Open X-Embodiment: Robotic Learning Datasets and RT-X Models",
+        "source_url": "https://robotics-transformer-x.github.io/",
+        "relation": "跨机构整合机器人数据并研究跨本体训练；数据集、训练混合与模型应分别记录。"
+      },
+      {
+        "year": 2024,
+        "title": "DROID: A Large-Scale In-the-Wild Robot Manipulation Dataset",
+        "source_url": "https://droid-dataset.github.io/",
+        "relation": "强调分布式真实场景采集与硬件复现；后续标定更新说明数据质量与版本同样需要维护。"
+      }
+    ],
+    "open_problems": [
+      "怎样用有限采集预算覆盖对失败最有影响的场景，而非重复容易动作？",
+      "不同机器人动作频率、坐标与控制接口怎样对齐且不掩盖差异？",
+      "数据修订后，如何追踪哪些模型、评测和结论需要重新检查？"
+    ],
+    "prerequisites": [
+      "Python数组、文件格式与数据处理",
+      "时间戳、坐标系、单位及传感器标定",
+      "抽样、数据划分、偏差与实验可复现性"
+    ],
+    "source_urls": [
+      "https://arxiv.org/abs/1910.11215",
+      "https://robotics-transformer-x.github.io/",
+      "https://droid-dataset.github.io/",
+      "https://huggingface.co/docs/lerobot/index"
+    ],
+    "reading_scope": "依据论文摘要、数据集作者项目页及LeRobot文档整理；未下载全量轨迹或审核全部许可证。采集规模不作模型能力证明，实际使用须固定数据与转换版本。"
+  },
+  {
+    "id": "simulation",
+    "title": "仿真与迁移",
+    "status": "proposed",
+    "intro": "仿真提供一个可以重置、重复并改变条件的实验环境，帮助研究者在有限真实硬件之外训练和比较方法。它包含的不仅是画面，还可能包括关节动力学、碰撞、摩擦、传感器噪声和任务规则。不同模拟器对这些因素的取舍不同：视觉导航重视场景与传感，精细接触操作则可能更受摩擦、形变和求解误差影响。仿真到现实的困难正来自这种差距。域随机化通过改变训练环境中的参数扩大覆盖，系统辨识则尝试用真实测量修正模型；两者可以结合，但都不能代替真实验证。仿真结果应说明场景、物理参数、控制频率与重置规则，迁移结果还需说明是否使用真实数据微调以及人工干预，才知道能力究竟跨越了什么。",
+    "example": "例如训练四足机器人在不同地面行走：仿真中改变质量、摩擦和传感延迟，检查策略是否只利用某一种理想条件；在受控真实场景测试后，发现电机响应与模型不同，再调整参数或策略。这个循环逐步缩小差距，不保证一次迁移成功。",
+    "core_questions": [
+      "任务最敏感的现实因素是什么，模拟器是否表达了它？",
+      "随机化范围依据真实测量，还是任意扩大到难以学习？",
+      "迁移成功需要多少真实数据、标定与人工干预？"
+    ],
+    "routes": [
+      {
+        "name": "物理模型与系统辨识",
+        "idea": "根据结构和测量建立动力学、接触与传感模型，并用真实数据校正。",
+        "strength": "差异来源较明确，便于针对关键物理量修正。",
+        "limit": "复杂摩擦、柔性材料与磨损很难完全建模。"
+      },
+      {
+        "name": "域随机化与鲁棒训练",
+        "idea": "在质量、外观、噪声和延迟等变化下训练同一策略。",
+        "strength": "可降低对单一仿真设置的依赖。",
+        "limit": "覆盖不足无法应对现实变化，过宽范围也可能损害任务表现。"
+      },
+      {
+        "name": "任务平台与交互场景",
+        "idea": "统一环境、机器人接口、重置方式与任务判定，支持规模化实验。",
+        "strength": "便于比较算法和研究跨场景泛化。",
+        "limit": "任务定义和仿真简化会限制结论可外推的范围。"
+      }
+    ],
+    "history": [
+      {
+        "year": 2012,
+        "title": "MuJoCo: A physics engine for model-based control",
+        "source_url": "https://www.roboti.us/lab/papers/TodorovIROS12.pdf",
+        "relation": "面向控制的物理仿真代表基础设施；它提供实验条件，本身不是机器人任务策略。"
+      },
+      {
+        "year": 2017,
+        "title": "Domain Randomization for Transferring Deep Neural Networks from Simulation to the Real World",
+        "source_url": "https://arxiv.org/abs/1703.06907",
+        "relation": "研究视觉外观随机化与现实迁移；不能把该项实验结论直接扩展为任意接触动力学都可迁移。"
+      },
+      {
+        "year": 2019,
+        "title": "Habitat: A Platform for Embodied AI Research",
+        "source_url": "https://arxiv.org/abs/1904.01201",
+        "relation": "组织三维场景、可配置传感器和任务评测；与MuJoCo服务侧重点不同，并非同一引擎的升级。"
+      }
+    ],
+    "open_problems": [
+      "怎样知道模拟器遗漏的因素足以改变方法优劣，而不是只改变数值？",
+      "触觉、软体和接触中的多尺度现象如何兼顾准确性与计算效率？",
+      "如何报告真实适配成本，使“零样本迁移”和大量现场调试不被混淆？"
+    ],
+    "prerequisites": [
+      "机器人动力学、摩擦与接触的直觉",
+      "训练/评测环境、重置与随机种子",
+      "系统辨识、噪声和分布偏移的基本概念"
+    ],
+    "source_urls": [
+      "https://www.roboti.us/lab/papers/TodorovIROS12.pdf",
+      "https://arxiv.org/abs/1703.06907",
+      "https://arxiv.org/abs/1904.01201",
+      "https://aihabitat.org/",
+      "https://behavior.stanford.edu/"
+    ],
+    "reading_scope": "核查原论文摘要、MuJoCo论文概要及平台官方说明，未运行模拟器或测量现实迁移差距。不同平台的渲染速度、物理保真度和适用任务不作直接排名。"
+  },
+  {
+    "id": "evaluation",
+    "title": "评测、安全与落地",
+    "status": "proposed",
+    "intro": "评测要回答的不是“机器人能不能偶尔做到”，而是在什么条件下、以多大代价、稳定地做到什么。一次成功视频无法显示失败次数、环境重置、人工接管或任务筛选；一个总体平均分也可能掩盖某类物体上的持续失败。可靠比较需要统一任务、传感器信息、训练与微调条件、动作频率、试验次数和成功判定，并分别报告时延、约束违反与恢复能力。安全研究进一步关注系统何时不应继续行动，怎样检测异常并转入可控状态。产品落地还面对运行时间、维护、材料损耗和现场变化。基准提供可重复的比较起点，但其分数只支持对应协议内的结论，不能自动证明真实应用中的安全性，更不能把厂商演示当作独立验证。",
+    "example": "例如比较两个抓取方法：使用相同对象与初始状态分布，预先规定成功条件和最大尝试次数，记录失败、接管与碰撞；再单独改变光照或对象材质。若方法只在原条件下较好，结论应保留这个范围，而不是写成全面优于另一方法。",
+    "core_questions": [
+      "评测是否控制了训练数据、机器人配置和测试协议等关键变量？",
+      "指标怎样反映失败代价、约束违反、人工帮助与恢复能力？",
+      "基准中的收益能否在实际部署条件下重复出现？"
+    ],
+    "routes": [
+      {
+        "name": "标准任务与统一协议",
+        "idea": "固定对象、任务和计分方式，使不同方法具有可比较的起点。",
+        "strength": "便于复现、积累结果和定位明确能力差异。",
+        "limit": "过度围绕固定基准优化，可能掩盖真实环境中的弱点。"
+      },
+      {
+        "name": "扰动、消融与泛化测试",
+        "idea": "改变单个条件、移除组件或使用未见任务，检查能力来源与边界。",
+        "strength": "能区分有效机制、数据优势和特定环境捷径。",
+        "limit": "测试空间很大，有限扰动不能证明所有情况下都可靠。"
+      },
+      {
+        "name": "安全约束与运行记录",
+        "idea": "同时记录约束违反、异常、接管和持续运行情况，并检查恢复机制。",
+        "strength": "使评价接近真实使用中的失败成本。",
+        "limit": "低频严重事件难通过短期试验估计，仍需明确适用边界。"
+      }
+    ],
+    "history": [
+      {
+        "year": 2015,
+        "title": "Benchmarking in Manipulation Research: The YCB Object and Model Set and Benchmarking Protocols",
+        "source_url": "https://people.eecs.berkeley.edu/~pabbeel/papers/2015-RAM-YCB-object-set.pdf",
+        "relation": "用对象与操作协议促进可比较研究；共享同一对象并不自动意味着实验协议相同。"
+      },
+      {
+        "year": 2022,
+        "title": "Safe-Control-Gym: A Unified Benchmark Suite for Safe Learning-Based Control and Reinforcement Learning in Robotics",
+        "source_url": "https://github.com/learnsyslab/safe-control-gym/blob/main/README.md",
+        "relation": "期刊发表年份；在统一动态系统中比较控制、学习和安全约束，不等同于整机安全认证。"
+      },
+      {
+        "year": 2023,
+        "title": "LIBERO: Benchmarking Knowledge Transfer for Lifelong Robot Learning",
+        "source_url": "https://arxiv.org/abs/2306.03310",
+        "relation": "关注操作任务中的知识迁移和持续学习；与前两项评价维度不同，不应混成一个通用机器人总榜。"
+      }
+    ],
+    "open_problems": [
+      "怎样公开失败与人工干预，使不同实验室的成功率具有可解释性？",
+      "面对长尾场景，哪些测试最能发现平均指标掩盖的关键风险？",
+      "模型或数据更新后，如何确认旧任务没有退化并保留可追溯结果？"
+    ],
+    "prerequisites": [
+      "对照实验、抽样与统计不确定性",
+      "训练/测试划分、消融和混杂因素",
+      "机器人约束、失效模式与人工接管概念"
+    ],
+    "source_urls": [
+      "https://people.eecs.berkeley.edu/~pabbeel/papers/2015-RAM-YCB-object-set.pdf",
+      "https://www.ycbbenchmarks.com/protocols-and-benchmarks/",
+      "https://github.com/learnsyslab/safe-control-gym/blob/main/README.md",
+      "https://arxiv.org/abs/2306.03310",
+      "https://behavior.stanford.edu/"
+    ],
+    "reading_scope": "依据原作者论文摘要、YCB协议页、官方基准说明及仓库引用整理，未复跑排行榜。有关安全的内容是研究评价框架，不宣称任何方法或产品已获安全认证。"
+  }
+]
