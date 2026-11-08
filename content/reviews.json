@@ -371,5 +371,223 @@
         "locator": "Bead Maze"
       }
     ]
+  },
+  {
+    "id": "grifips-review",
+    "doi": "10.1126/sciadv.aej9537",
+    "journal_id": "science_advances",
+    "journal": "Science Advances",
+    "title_zh": "GriFIPS：一层渐变网格，怎样改变机器人手指的触觉信号",
+    "original_title": "Gradient-interlayer–based flexible pressure sensors for high-performance robotic perception",
+    "work_id": null,
+    "published_on": "2026-10-23",
+    "type": "full_text_guide",
+    "source_name": "Science Advances · 正式期刊论文",
+    "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13693661/",
+    "domain_ids": [
+      "embodiment",
+      "tactile_sensors",
+      "sensor_calibration",
+      "perception",
+      "tactile_perception",
+      "control",
+      "dexterous_manipulation",
+      "evaluation",
+      "generalization_tests"
+    ],
+    "summary": "触觉传感器需要既能读出轻微接触，又不在较大压力下早早饱和。GriFIPS把渐变孔径网格放在电极与离子水凝胶之间，使接触面积随载荷逐步增加。它的价值需要分三层看：器件响应、固定流程下的物体分类，以及机器人任务演示；三层证据不能相互替代。",
+    "why_selected": "把触觉硬件结构、时序表征与评测协议连接起来，适合从传感器走向机器人感知的学习路线。",
+    "reading_basis": "核读开放全文的设计与工作原理、传感表征、物体分类及图4实验协议；未逐项核读补充材料、观看全部视频或独立复现实验。正文以作者结果、整理者分析分开呈现。原文为CC BY-NC 4.0；本页为非商业学术学习的中文改写，未转载图片。",
+    "sections": [
+      {
+        "heading": "先理解问题：灵敏、量程和线性为什么难以同时做好",
+        "kind": "analysis",
+        "paragraphs": [
+          "想象机器人既要轻触海绵，也要握紧硬块。轻触时希望电信号足够明显；用力后又希望信号仍能区分压力，而不是已到上限。若压力加倍、信号变化却完全不成比例，标定和后端控制也会更复杂。论文讨论的是这一组器件约束，不是仅提高神经网络准确率。"
+        ],
+        "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13693661/",
+        "locator": "Introduction；Fig.1"
+      },
+      {
+        "heading": "结构选择：让接触逐步发生",
+        "kind": "source",
+        "paragraphs": [
+          "作者在柔性电极与离子水凝胶之间加入一层孔径向外渐变的网格。受压时，水凝胶在网格约束下发生局部形变，逐步接触上方电极。接触界面的电双层产生较大的电容；网格则调节接触面积随压力扩展的过程，减缓过早饱和。",
+          "关键设计把问题拆成两个尺度：微观界面负责产生可测电信号，宏观网格负责控制哪些区域何时接触。这里的仿生是从皮肤受体逐步参与的思想获得启发，不等于复制了人的完整触觉系统。"
+        ],
+        "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13693661/",
+        "locator": "Results: Bioinspired design；Design and sensing principles；Fig.1B–C"
+      },
+      {
+        "heading": "器件数据：每个数字都有自己的测试",
+        "kind": "source",
+        "paragraphs": [
+          "作者报告约175.9 kPa⁻¹的灵敏度、到约360 kPa的线性范围（R²=0.997）和约25 ms的响应时间。6000余次循环对应150 kPa反复加载；2000次拉伸对应50%应变。它们分别描述响应、耐压循环和拉伸后的稳定性，不能合并成全天候长期可靠性的保证。"
+        ],
+        "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13693661/",
+        "locator": "Results: Sensing performance；Fig.3"
+      },
+      {
+        "heading": "从电容曲线到14类物体",
+        "kind": "source",
+        "paragraphs": [
+          "机器人手指对物体以0.4 mm/s下压1 mm，再以相同速度收回并停留0.5秒，完整探测约6秒。电容时序经预处理后进入时间卷积网络（TCN）。每类物体记录500个完整按压试次，按类别分层，以80/20划分为每类400个训练和100个测试样本。",
+          "图4报告1400个保留测试试次上的99.86%分类准确率。这里测试的是同一组14类对象、固定探测流程中的保留试次；它不是任意陌生物体、不同机器人、不同按压速度或不同环境的成功率。按完整试次划分比混合一个试次内的片段更有意义，但仍需另外验证跨物体、跨设备与跨场景泛化。"
+        ],
+        "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13693661/",
+        "locator": "Tactile object recognition；Fig.4C–G；数据采集与划分段"
+      },
+      {
+        "heading": "温度与系统链路仍然重要",
+        "kind": "source",
+        "paragraphs": [
+          "论文指出15–45°C温度变化会明显影响灵敏度，偏离室温时仍需要温度标定。实验链路包括电容数字转换、微控制器、蓝牙和主机上的TCN。器件响应时间只是整个感知链路的一部分，不能直接拿25 ms当作端到端控制延迟。"
+        ],
+        "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13693661/",
+        "locator": "Environmental stability；Fig.4A；物体识别系统描述"
+      },
+      {
+        "heading": "接下来怎样读，才能变成自己的研究问题",
+        "kind": "analysis",
+        "paragraphs": [
+          "先把传感器输入输出写清：载荷如何改变接触，接触怎样改变电容，TCN使用的时间序列又保留了哪些物理信息。再设计更难的对照：改变按压速度和接触位置，留出整类物体或另一个传感器测试，并与简单统计特征比较。",
+          "它与Sparsh的连接在“触觉表征”，但输入形式不同：本文示例是一维电容时序，Sparsh研究的主要是视觉式触觉图像。现成模型不能不经适配就互换；共同的问题是怎样把硬件信号变成可迁移的接触信息。"
+        ],
+        "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13693661/",
+        "locator": "Fig.4；本站整理者分析，非作者已完成实验"
+      }
+    ],
+    "evidence": [
+      {
+        "condition": "14类物体；每类500个完整按压试次；固定80/20分层划分",
+        "result": "作者报告1400个测试试次的分类准确率为99.86%。",
+        "caveat": "保留试次测试，未据此确认新物体类别、跨传感器或跨场景表现。",
+        "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13693661/",
+        "locator": "Fig.4G；Tactile object recognition"
+      },
+      {
+        "condition": "150 kPa循环加载；另测50%应变重复拉伸",
+        "result": "作者报告6000余次加载循环稳定，以及2000次拉伸后的压力响应接近初始。",
+        "caveat": "这些实验不是全年寿命、封装磨损或任意温湿度保证。",
+        "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13693661/",
+        "locator": "Fig.3F–G；Environmental stability"
+      }
+    ],
+    "limitations": [
+      "未独立复现制造过程、信号采集和TCN训练。",
+      "温度改变会影响灵敏度，部署时需要相应标定。",
+      "固定14类物体分类不能代替开放世界泛化测试。",
+      "器件响应、识别速度与机器人任务成功率是不同指标。"
+    ],
+    "related_work": []
+  },
+  {
+    "id": "aerial-morphology-review",
+    "doi": "10.1126/sciadv.aeg4557",
+    "journal_id": "science_advances",
+    "journal": "Science Advances",
+    "title_zh": "空中形态智能：让柔顺机构分担无人机接触控制",
+    "original_title": "Morphological intelligence for dynamic aerial interactions",
+    "work_id": null,
+    "published_on": "2026-10-23",
+    "type": "full_text_guide",
+    "source_name": "Science Advances · 正式期刊论文",
+    "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13693677/",
+    "domain_ids": [
+      "embodiment",
+      "morphology_design",
+      "actuation",
+      "control",
+      "contact_control",
+      "planning",
+      "evaluation",
+      "deployment_evidence"
+    ],
+    "summary": "无人机快速抓取或接触目标时，机械臂的反作用力会扰动飞行。论文把储能后快速释放的双稳态机构与柔顺机械臂结合，用结构形变衰减冲击，并在接触后被动适应伸出长度。主动定位与被动适应各负责一部分问题，实验仍使用视觉和动作捕捉。",
+    "why_selected": "说明具身智能不仅是更大的策略模型，也包含机构、材料和控制之间的分工；同时提供可核对的刚性机械臂对照。",
+    "reading_basis": "核读开放全文的机构设计、刚性对照、动态实验、控制框架、讨论与Materials and Methods；未独立运行硬件、核读全部补充推导或完整观看视频。原文为CC BY 4.0，本页为中文改写。",
+    "sections": [
+      {
+        "heading": "矛盾从哪里来：动作越猛，机身越容易被扰动",
+        "kind": "analysis",
+        "paragraphs": [
+          "地面机械臂常有相对稳定的基座；飞行机器人悬在空中，接触目标的反作用力会传回机身。让末端快速靠近目标，不代表机身还能保持稳定。柔软结构可缓冲冲击，却可能牺牲伸展速度，因此论文试图把快速释能和接触柔顺分配给不同结构。"
+        ],
+        "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13693677/",
+        "locator": "Introduction；Fig.1"
+      },
+      {
+        "heading": "两个结构分别承担什么",
+        "kind": "source",
+        "paragraphs": [
+          "非对称双稳态模块先储存弹性能，触发后快速释放，把末端推出。串联柔顺机械臂提供伸展空间，并在碰到目标后发生形变，降低传到机身的瞬态载荷。需要改变工作距离时可调整节数，但节数同时影响质量、所需能量和展开时间。"
+        ],
+        "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13693677/",
+        "locator": "Results: Bio-inspired physical decoupling；Fig.2"
+      },
+      {
+        "heading": "形态智能不是不用感知和控制",
+        "kind": "source",
+        "paragraphs": [
+          "移动目标实验使用RGB-D相机估计目标，动作捕捉提供无人机位姿。经过坐标对齐后，系统预测目标位置，以外环PD控制器驱动无人机接近。当水平误差小于1 cm、竖直偏差进入机构容许范围时才触发。",
+          "触发以后，机械臂最终伸到哪里由目标接触和结构形变决定，而不再主动控制伸出长度。被动的是接触后的长度适应，主动定位与触发仍不可缺少；不能把它解释成没有外部定位的户外自主抓取。"
+        ],
+        "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13693677/",
+        "locator": "Fig.6A；Autonomous target interception；Aerial platform integration"
+      },
+      {
+        "heading": "怎样读刚性对照中的改善百分比",
+        "kind": "source",
+        "paragraphs": [
+          "同接触高度的三节柔顺臂相对刚性参考臂，峰值反力从13.92 N降为9.22 N，降低33.76%；触发后100 ms内冲量从411.20降至96.80 mN·s，降低76.46%。两者测量的都是传到机身方向的载荷。",
+          "另一个相同初始高度的机身运动比较中，峰值位移降低74.57%。这不是通用飞行稳定性提高74.57%，而是特定构型、接触条件和比较指标下的结果。"
+        ],
+        "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13693677/",
+        "locator": "Fig.4F–G；fig.S16在正文中的对照说明；Mechanical characterization"
+      },
+      {
+        "heading": "70毫秒展开，为什么不代表高速无限连发",
+        "kind": "source",
+        "paragraphs": [
+          "图5构型从71 mm伸到166 mm，约2.3倍，70 ms内展开；靠形状记忆合金热驱动恢复到收拢状态约需440 ms。负载和节数会改变速度与恢复时间。",
+          "论文的约70%竖直容许范围来自七节机械臂固定平台测量：277 mm相对于395 mm展开长度。空中抓取使用三节构型。不能把七节的容许范围、另一构型的展开速度和最大负载拼接成同一机器人的同时性能。"
+        ],
+        "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13693677/",
+        "locator": "Fig.5；Validation of geometric tolerance；Discussion"
+      },
+      {
+        "heading": "对知识地图的启示与下一步问题",
+        "kind": "analysis",
+        "paragraphs": [
+          "这项工作把机构与形态、执行器、接触控制和评测连接起来：某些控制负担可以在结构层面提前处理。继续研究时，可以问：换成刚度不同或运动不可预测的目标，缓冲规律是否仍成立？风、碰撞角度和下洗气流怎样改变效果？",
+          "作者展示了抓取、栖停和跨介质交互等任务。任务演示说明功能可行，但若想比较可靠性，还需统一目标、负载与环境，报告重复次数、失败类型、恢复策略和耗能。这里提出的是后续评测问题，不是论文已完成的验证。"
+        ],
+        "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13693677/",
+        "locator": "Discussion；Fig.6–7；本站整理者分析"
+      }
+    ],
+    "evidence": [
+      {
+        "condition": "三节柔顺臂与刚性参考臂，同接触高度；冲量积分区间为触发后的100 ms",
+        "result": "作者报告峰值反力降低33.76%，该时间窗内冲量降低76.46%。",
+        "caveat": "相对特定参考与工况，不能外推到所有接触或所有无人机。",
+        "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13693677/",
+        "locator": "Fig.4F–G；Mechanical characterization"
+      },
+      {
+        "condition": "移动目标抓取；RGB-D感知、动作捕捉位姿与主动触发",
+        "result": "同一三节臂在多个垂直距离下被动适应接触长度。",
+        "caveat": "不是无需外部定位的自然环境可靠性验证；七节平台的70%容许范围属于另一试验。",
+        "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13693677/",
+        "locator": "Fig.6；Validation of geometric tolerance"
+      }
+    ],
+    "limitations": [
+      "动作捕捉参与实验位姿估计，不能直接宣称户外完全自主。",
+      "展开和热恢复处于不同时间尺度；持续循环能力需另测。",
+      "节数、负载和目标接触条件相互耦合，不能拼接各项最好数值。",
+      "没有在本站独立复现硬件、控制或全部任务。"
+    ],
+    "related_work": []
   }
 ]

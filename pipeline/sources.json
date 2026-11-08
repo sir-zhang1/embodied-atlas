@@ -1,8 +1,308 @@
 [
-  {"id":"arxiv_robotics","name":"arXiv · Robotics 最近提交","url":"https://export.arxiv.org/api/query?search_query=cat%3Acs.RO&start=0&max_results=30&sortBy=submittedDate&sortOrder=descending","parser":"arxiv_api","priority":30},
-  {"id":"arxiv_foundations","name":"arXiv · 基础工作版本核查","url":"https://export.arxiv.org/api/query?id_list=2303.04137,2406.09246,2405.12213,2403.12945","parser":"arxiv_api","priority":30},
-  {"id":"arxiv_rss","name":"arXiv · Robotics RSS","url":"https://rss.arxiv.org/rss/cs.RO","parser":"arxiv_rss","priority":10},
-  {"id":"lerobot_releases","name":"LeRobot · 官方代码发行","url":"https://api.github.com/repos/huggingface/lerobot/releases?per_page=5","parser":"github","priority":30},
-  {"id":"openvla_model","name":"OpenVLA · 官方模型仓库","url":"https://huggingface.co/api/models/openvla/openvla-7b","parser":"huggingface","priority":30},
-  {"id":"nvidia_robotics","name":"NVIDIA · 官方机器人资讯","url":"https://blogs.nvidia.com/blog/category/robotics/feed/","parser":"company_rss","priority":30}
+  {
+    "id": "arxiv_robotics",
+    "name": "arXiv · Robotics 最近提交",
+    "url": "https://export.arxiv.org/api/query?search_query=cat%3Acs.RO&start=0&max_results=30&sortBy=submittedDate&sortOrder=descending",
+    "parser": "arxiv_api",
+    "priority": 30
+  },
+  {
+    "id": "arxiv_foundations",
+    "name": "arXiv · 基础工作版本核查",
+    "url": "https://export.arxiv.org/api/query?id_list=2303.04137,2406.09246,2405.12213,2403.12945",
+    "parser": "arxiv_api",
+    "priority": 30
+  },
+  {
+    "id": "arxiv_rss",
+    "name": "arXiv · Robotics RSS",
+    "url": "https://rss.arxiv.org/rss/cs.RO",
+    "parser": "arxiv_rss",
+    "priority": 10
+  },
+  {
+    "id": "lerobot_releases",
+    "name": "LeRobot · 官方代码发行",
+    "url": "https://api.github.com/repos/huggingface/lerobot/releases?per_page=5",
+    "parser": "github",
+    "priority": 30
+  },
+  {
+    "id": "openvla_model",
+    "name": "OpenVLA · 官方模型仓库",
+    "url": "https://huggingface.co/api/models/openvla/openvla-7b",
+    "parser": "huggingface",
+    "priority": 30
+  },
+  {
+    "id": "nvidia_robotics",
+    "name": "NVIDIA · 官方机器人资讯",
+    "url": "https://blogs.nvidia.com/blog/category/robotics/feed/",
+    "parser": "company_rss",
+    "priority": 30
+  },
+  {
+    "id": "journal_science_robotics",
+    "name": "Science Robotics",
+    "url": "https://api.crossref.org/journals/2470-9476/works",
+    "parser": "crossref",
+    "priority": 50,
+    "journal_id": "science_robotics",
+    "issn": "2470-9476",
+    "scope": "robotics",
+    "initial_lookback_days": 180
+  },
+  {
+    "id": "journal_tro",
+    "name": "IEEE Transactions on Robotics",
+    "url": "https://api.crossref.org/journals/1552-3098/works",
+    "parser": "crossref",
+    "priority": 50,
+    "journal_id": "tro",
+    "issn": "1552-3098",
+    "scope": "robotics",
+    "initial_lookback_days": 180
+  },
+  {
+    "id": "journal_ijrr",
+    "name": "The International Journal of Robotics Research",
+    "url": "https://api.crossref.org/journals/0278-3649/works",
+    "parser": "crossref",
+    "priority": 50,
+    "journal_id": "ijrr",
+    "issn": "0278-3649",
+    "scope": "robotics",
+    "initial_lookback_days": 180
+  },
+  {
+    "id": "journal_ral",
+    "name": "IEEE Robotics and Automation Letters",
+    "url": "https://api.crossref.org/journals/2377-3766/works",
+    "parser": "crossref",
+    "priority": 50,
+    "journal_id": "ral",
+    "issn": "2377-3766",
+    "scope": "robotics",
+    "initial_lookback_days": 90
+  },
+  {
+    "id": "journal_annual_robotics",
+    "name": "Annual Review of Control, Robotics, and Autonomous Systems",
+    "url": "https://api.crossref.org/journals/2573-5144/works",
+    "parser": "crossref",
+    "priority": 50,
+    "journal_id": "annual_robotics",
+    "issn": "2573-5144",
+    "scope": "robotics",
+    "initial_lookback_days": 365
+  },
+  {
+    "id": "journal_soft_robotics",
+    "name": "Soft Robotics",
+    "url": "https://api.crossref.org/journals/2169-5172/works",
+    "parser": "crossref",
+    "priority": 50,
+    "journal_id": "soft_robotics",
+    "issn": "2169-5172",
+    "scope": "robotics",
+    "initial_lookback_days": 180
+  },
+  {
+    "id": "journal_field_robotics",
+    "name": "Journal of Field Robotics",
+    "url": "https://api.crossref.org/journals/1556-4959/works",
+    "parser": "crossref",
+    "priority": 50,
+    "journal_id": "field_robotics",
+    "issn": "1556-4959",
+    "scope": "robotics",
+    "initial_lookback_days": 180
+  },
+  {
+    "id": "journal_autonomous_robots",
+    "name": "Autonomous Robots",
+    "url": "https://api.crossref.org/journals/0929-5593/works",
+    "parser": "crossref",
+    "priority": 50,
+    "journal_id": "autonomous_robots",
+    "issn": "0929-5593",
+    "scope": "robotics",
+    "initial_lookback_days": 180
+  },
+  {
+    "id": "journal_nature_mi",
+    "name": "Nature Machine Intelligence",
+    "url": "https://api.crossref.org/journals/2522-5839/works",
+    "parser": "crossref",
+    "priority": 50,
+    "journal_id": "nature_mi",
+    "issn": "2522-5839",
+    "scope": "cross",
+    "initial_lookback_days": 180
+  },
+  {
+    "id": "journal_nature_electronics",
+    "name": "Nature Electronics",
+    "url": "https://api.crossref.org/journals/2520-1131/works",
+    "parser": "crossref",
+    "priority": 50,
+    "journal_id": "nature_electronics",
+    "issn": "2520-1131",
+    "scope": "cross",
+    "initial_lookback_days": 180
+  },
+  {
+    "id": "journal_nature",
+    "name": "Nature",
+    "url": "https://api.crossref.org/journals/0028-0836/works",
+    "parser": "crossref",
+    "priority": 50,
+    "journal_id": "nature",
+    "issn": "0028-0836",
+    "scope": "cross",
+    "initial_lookback_days": 90
+  },
+  {
+    "id": "journal_science",
+    "name": "Science",
+    "url": "https://api.crossref.org/journals/0036-8075/works",
+    "parser": "crossref",
+    "priority": 50,
+    "journal_id": "science",
+    "issn": "0036-8075",
+    "scope": "cross",
+    "initial_lookback_days": 90
+  },
+  {
+    "id": "journal_nature_communications",
+    "name": "Nature Communications",
+    "url": "https://api.crossref.org/journals/2041-1723/works",
+    "parser": "crossref",
+    "priority": 50,
+    "journal_id": "nature_communications",
+    "issn": "2041-1723",
+    "scope": "cross",
+    "initial_lookback_days": 30
+  },
+  {
+    "id": "journal_science_advances",
+    "name": "Science Advances",
+    "url": "https://api.crossref.org/journals/2375-2548/works",
+    "parser": "crossref",
+    "priority": 50,
+    "journal_id": "science_advances",
+    "issn": "2375-2548",
+    "scope": "cross",
+    "initial_lookback_days": 60
+  },
+  {
+    "id": "journal_advanced_materials",
+    "name": "Advanced Materials",
+    "url": "https://api.crossref.org/journals/0935-9648/works",
+    "parser": "crossref",
+    "priority": 50,
+    "journal_id": "advanced_materials",
+    "issn": "0935-9648",
+    "scope": "cross",
+    "initial_lookback_days": 30
+  },
+  {
+    "id": "journal_advanced_functional_materials",
+    "name": "Advanced Functional Materials",
+    "url": "https://api.crossref.org/journals/1616-301X/works",
+    "parser": "crossref",
+    "priority": 50,
+    "journal_id": "advanced_functional_materials",
+    "issn": "1616-301X",
+    "scope": "cross",
+    "initial_lookback_days": 7
+  },
+  {
+    "id": "journal_tpami",
+    "name": "IEEE Transactions on Pattern Analysis and Machine Intelligence",
+    "url": "https://api.crossref.org/journals/0162-8828/works",
+    "parser": "crossref",
+    "priority": 50,
+    "journal_id": "tpami",
+    "issn": "0162-8828",
+    "scope": "cross",
+    "initial_lookback_days": 90
+  },
+  {
+    "id": "journal_ijcv",
+    "name": "International Journal of Computer Vision",
+    "url": "https://api.crossref.org/journals/0920-5691/works",
+    "parser": "crossref",
+    "priority": 50,
+    "journal_id": "ijcv",
+    "issn": "0920-5691",
+    "scope": "cross",
+    "initial_lookback_days": 90
+  },
+  {
+    "id": "journal_information_fusion",
+    "name": "Information Fusion",
+    "url": "https://api.crossref.org/journals/1566-2535/works",
+    "parser": "crossref",
+    "priority": 50,
+    "journal_id": "information_fusion",
+    "issn": "1566-2535",
+    "scope": "cross",
+    "initial_lookback_days": 90
+  },
+  {
+    "id": "journal_rcim",
+    "name": "Robotics and Computer-Integrated Manufacturing",
+    "url": "https://api.crossref.org/journals/0736-5845/works",
+    "parser": "crossref",
+    "priority": 50,
+    "journal_id": "rcim",
+    "issn": "0736-5845",
+    "scope": "robotics",
+    "initial_lookback_days": 90
+  },
+  {
+    "id": "journal_tase",
+    "name": "IEEE Transactions on Automation Science and Engineering",
+    "url": "https://api.crossref.org/journals/1545-5955/works",
+    "parser": "crossref",
+    "priority": 50,
+    "journal_id": "tase",
+    "issn": "1545-5955",
+    "scope": "cross",
+    "initial_lookback_days": 90
+  },
+  {
+    "id": "journal_tmech",
+    "name": "IEEE/ASME Transactions on Mechatronics",
+    "url": "https://api.crossref.org/journals/1083-4435/works",
+    "parser": "crossref",
+    "priority": 50,
+    "journal_id": "tmech",
+    "issn": "1083-4435",
+    "scope": "cross",
+    "initial_lookback_days": 90
+  },
+  {
+    "id": "journal_haptics",
+    "name": "IEEE Transactions on Haptics",
+    "url": "https://api.crossref.org/journals/1939-1412/works",
+    "parser": "crossref",
+    "priority": 50,
+    "journal_id": "haptics",
+    "issn": "1939-1412",
+    "scope": "robotics",
+    "initial_lookback_days": 180
+  },
+  {
+    "id": "journal_cyborg_bionic",
+    "name": "Cyborg and Bionic Systems",
+    "url": "https://api.crossref.org/journals/2692-7632/works",
+    "parser": "crossref",
+    "priority": 50,
+    "journal_id": "cyborg_bionic",
+    "issn": "2692-7632",
+    "scope": "robotics",
+    "initial_lookback_days": 180
+  }
 ]

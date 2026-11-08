@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Zero-model, standard-library research metadata adapter; no cloud is configured."""
+"""Zero-model research metadata adapter for local and GitHub Actions collection."""
 import argparse
 import datetime as dt
 from email.utils import parsedate_to_datetime
@@ -23,7 +23,7 @@ ROOT = BASE.parent
 DEFAULT_DB = BASE / ".data" / "research.sqlite"
 MAX_BYTES = 3_000_000
 MAX_ITEMS = 200
-HOSTS = {"export.arxiv.org", "rss.arxiv.org", "api.github.com", "huggingface.co", "blogs.nvidia.com"}
+HOSTS = {"export.arxiv.org", "rss.arxiv.org", "api.github.com", "huggingface.co", "blogs.nvidia.com", "api.crossref.org"}
 LINK_HOSTS = HOSTS | {"arxiv.org", "github.com", "doi.org"}
 ALLOWED_PATHS = {
     "export.arxiv.org": {"/api/query"}, "rss.arxiv.org": {"/rss/cs.RO"},
@@ -75,7 +75,8 @@ def valid_url(url, *, fetch=False):
         raise ValueError("Only credential-free HTTPS source URLs are allowed")
     if p.hostname not in (HOSTS if fetch else LINK_HOSTS):
         raise ValueError("Source host is not allowlisted")
-    if fetch and p.path not in ALLOWED_PATHS[p.hostname]:
+    endpoint_allowed = bool(re.fullmatch(r"/journals/\d{4}-\d{3}[\dX]/works", p.path)) if p.hostname == "api.crossref.org" else p.path in ALLOWED_PATHS.get(p.hostname, set())
+    if fetch and not endpoint_allowed:
         raise ValueError("Source endpoint is not allowlisted")
     return url
 
@@ -86,8 +87,8 @@ class SafeRedirect(urllib.request.HTTPRedirectHandler):
         return super().redirect_request(req, fp, code, msg, headers, newurl)
 
 
-def fetch_source(source):
-    url = valid_url(source["url"], fetch=True)
+def fetch_url(url):
+    url = valid_url(url, fetch=True)
     req = urllib.request.Request(url, headers={
         "User-Agent": "EmbodiedAtlasMetadata/0.1 (public research metadata; no model calls)",
         "Accept": "application/atom+xml, application/rss+xml, application/json",
@@ -100,6 +101,122 @@ def fetch_source(source):
             raise ValueError("Metadata response exceeds 3 MB limit")
         return raw, {"http_status": response.status, "bytes": len(raw),
                      "sha256": hashlib.sha256(raw).hexdigest(), "final_url": response.url}
+
+
+def crossref_url(source, since, until, cursor="*"):
+    fields = "DOI,title,abstract,type,container-title,ISSN,author,published,published-online,published-print,deposited,relation,license,publisher"
+    params = {"rows":200,"cursor":cursor,"select":fields,
+              "filter":f"type:journal-article,from-update-date:{since},until-update-date:{until}"}
+    if not source.get("_since"):
+        params["filter"] += ",from-pub-date:2024-01-01"
+    return source["url"] + "?" + urllib.parse.urlencode(params)
+
+
+def fetch_crossref(source, fetcher=fetch_url, sleeper=time.sleep):
+    # A failed or incomplete window never advances source_runs' last-success checkpoint.
+    until = source.get("_until", now())[:19]
+    since = source.get("_since") or (dt.datetime.fromisoformat(until)-dt.timedelta(days=source["initial_lookback_days"])).isoformat()
+    cursor, records, seen_cursors, hashes = "*", [], set(), []
+    first_url = crossref_url(source, since, until)
+    for page in range(30):
+        url = crossref_url(source, since, until, cursor)
+        for attempt in range(3):
+            try:
+                raw, meta = fetcher(url)
+                break
+            except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError) as error:
+                if isinstance(error, urllib.error.HTTPError) and error.code not in (429,500,502,503,504):
+                    raise
+                if attempt == 2:
+                    raise
+                wait = int(error.headers.get("Retry-After", 3*(attempt+1))) if isinstance(error, urllib.error.HTTPError) else 3*(attempt+1)
+                if wait > 30:
+                    raise
+                sleeper(max(1,wait))
+        payload = json.loads(raw)
+        if payload.get("status") != "ok" or payload.get("message-type") != "work-list":
+            raise ValueError("Expected Crossref work-list response")
+        message = payload["message"]
+        batch = message.get("items")
+        if not isinstance(batch,list) or len(batch)>200:
+            raise ValueError("Invalid Crossref page")
+        records.extend(batch)
+        hashes.append(meta["sha256"])
+        if len(batch)<200:
+            result = encode({"status":"ok","message-type":"work-list","message":{"items":records}}).encode()
+            if len(result)>12_000_000:
+                raise ValueError("Crossref window exceeds the 12 MB safety limit")
+            return result, {"http_status":200,"sha256":digest(hashes),"bytes":len(result),"final_url":first_url}
+        cursor = message.get("next-cursor")
+        if not isinstance(cursor,str) or not cursor or cursor in seen_cursors:
+            raise ValueError("Crossref pagination did not advance; window was not committed")
+        seen_cursors.add(cursor)
+        sleeper(0.3)
+    raise ValueError("Crossref window exceeds 6000 records; narrow the backfill window before retrying")
+
+
+def fetch_source(source):
+    return fetch_crossref(source) if source["parser"] == "crossref" else fetch_url(source["url"])
+
+
+def crossref_date(item):
+    # Keep year/month precision; never invent a day or use a metadata deposit as publication.
+    for field in ("published-online","published","published-print"):
+        parts = item.get(field,{}).get("date-parts",[])
+        if not parts or not parts[0]:
+            continue
+        values = parts[0]
+        if len(values)>3 or any(type(x) is not int for x in values):
+            raise ValueError("Invalid Crossref publication date")
+        dt.date(*(values+[1]*(3-len(values))))
+        return "-".join(f"{x:04d}" if i==0 else f"{x:02d}" for i,x in enumerate(values)), field
+    return None, "unknown"
+
+
+EMBODIED_TERMS = re.compile(r"robot|embodied (?:intelligence|ai)|visuo.?tactile|dexterous|grasping|electronic skin|e-skin|soft actuator|autonomous navigat|vision.language.action|sim.to.real|tactile (?:sensor|sensing|perception|feedback|device|skin)|haptic (?:sensor|interface|feedback|device)", re.I)
+
+
+def parse_crossref(source, raw):
+    payload=json.loads(raw)
+    if payload.get("status")!="ok" or payload.get("message-type")!="work-list" or not isinstance(payload.get("message",{}).get("items"),list):
+        raise ValueError("Expected Crossref journal metadata")
+    result=[]
+    for record in payload["message"]["items"]:
+        if source["issn"] not in record.get("ISSN",[]):
+            raise ValueError("Crossref record is outside the configured journal ISSN")
+        if record.get("type")!="journal-article":
+            continue
+        title=plain(" ".join(record.get("title",[])),1000)
+        abstract=plain(record.get("abstract"))
+        text=(title+" "+abstract).lower()
+        if source["scope"]=="cross" and not EMBODIED_TERMS.search(text):
+            continue
+        doi=doi_identifier(record.get("DOI"))
+        if not doi or not title:
+            raise ValueError("Journal article lacks a title or DOI")
+        published,basis=crossref_date(record)
+        identifiers={"doi":doi}
+        for relation in record.get("relation",{}).get("has-preprint",[]):
+            value=str(relation.get("id",""))
+            if value.lower().startswith("10.48550/arxiv."):
+                identifiers["arxiv"]=arxiv_identifier(value[len("10.48550/arxiv."):])[0]
+        topic_matches={key:[term for term in terms if contains(text,term)] for key,terms in RULES.items()}
+        topic_matches={key:terms for key,terms in topic_matches.items() if terms}
+        excerpt=" ".join(abstract.split()[:24])
+        if len(abstract.split())>24: excerpt+="…"
+        result.append({"kind":"paper","title":title,"title_en":title,"url":"https://doi.org/"+doi,
+            "summary":excerpt,"summary_is_excerpt":True,"abstract_available":bool(abstract),
+            "source_fingerprint":digest({"title":title,"abstract":abstract,"published":published}),
+            "arxiv_id":identifiers.get("arxiv"),"doi":doi,"identifiers":identifiers,"version":"published",
+            "published_at":published,"publication_date_basis":"crossref_"+basis,"version_updated_at":None,
+            "publication_status":"future_issue_date" if published and published>now()[:len(published)] else "publisher_registered",
+            "journal":plain("; ".join(record.get("container-title",[])),300),"journal_id":source["journal_id"],
+            "issn":source["issn"],"publisher":plain(record.get("publisher"),300),"topic_matches":topic_matches,
+            "authors":[plain(" ".join(filter(None,(x.get("given"),x.get("family")))),200) for x in record.get("author",[])[:60]],
+            "evidence_scope":"publisher_abstract_excerpt" if abstract else "publisher_metadata_only",
+            "claims_status":"author_claims_not_independently_reproduced" if abstract else "metadata_only_no_performance_claims",
+            "date_note":"出版方向Crossref登记的日期；保留年/月/日精度。登记或更新日期不等于论文首次发表日期。"})
+    return result
 
 
 def arxiv_identifier(value):
@@ -137,7 +254,9 @@ def parse(source, raw):
         raise ValueError("XML declarations with external entities are not accepted")
     kind = source["parser"]
     result = []
-    if kind == "arxiv_api":
+    if kind == "crossref":
+        result = parse_crossref(source,raw)
+    elif kind == "arxiv_api":
         root = ET.fromstring(raw)
         if root.tag != "{http://www.w3.org/2005/Atom}feed":
             raise ValueError("Expected an Atom feed")
@@ -262,6 +381,9 @@ def routing(item, domains):
     text = (item["title"] + " " + item["summary"]).lower()
     matches = {key: [word for word in words if contains(text, word)] for key, words in RULES.items()}
     matches = {key: words for key, words in matches.items() if words}
+    for key, words in item.get("topic_matches",{}).items():
+        if key in RULES and key in domains:
+            matches.setdefault(key,words)
     for key in item.get("fixed_domains", []):
         matches.setdefault(key, ["official_repository_scope"])
     # Ambiguous entries stay unclassified instead of inventing a new field.
@@ -363,6 +485,10 @@ def ingest_source(db, source, fetcher=fetch_source, domains=None):
     db.commit()
     meta = {}
     try:
+        if source["parser"] == "crossref":
+            prior=db.execute("SELECT started_at FROM source_runs WHERE source_id=? AND status IN ('updated','no_change') ORDER BY id DESC LIMIT 1",(source["id"],)).fetchone()
+            since=(dt.datetime.fromisoformat(prior[0])-dt.timedelta(days=2)).isoformat()[:19] if prior else None
+            source={**source,"_since":since,"_until":started}
         raw, meta = fetcher(source)
         items = parse(source, raw)
         totals = [0,0,0]
@@ -373,6 +499,8 @@ def ingest_source(db, source, fetcher=fetch_source, domains=None):
             status = "updated" if any(totals) else "no_change"
             db.execute("UPDATE source_runs SET finished_at=?,status=?,http_status=?,items_seen=?,new_works=?,new_versions=?,changed_records=?,response_sha256=? WHERE id=?",
                 (now(),status,meta.get("http_status"),len(items),*totals,meta.get("sha256"),run_id))
+            if meta.get("final_url"):
+                db.execute("UPDATE source_runs SET url=? WHERE id=?",(valid_url(meta["final_url"],fetch=True),run_id))
     except Exception as error:
         db.rollback()
         # Avoid exception text containing credentials or unexpected remote payloads.
@@ -417,6 +545,8 @@ def export_data(db):
         run = db.execute("SELECT * FROM source_runs WHERE source_id=? ORDER BY id DESC LIMIT 1", (source["id"],)).fetchone()
         success = db.execute("SELECT finished_at FROM source_runs WHERE source_id=? AND status IN ('updated','no_change') ORDER BY id DESC LIMIT 1", (source["id"],)).fetchone()
         entry = {k:source[k] for k in ("id","name","url")}
+        entry.update({k:source[k] for k in ("journal_id","issn","scope","initial_lookback_days") if k in source})
+        if run: entry["last_request_url"]=run["url"]
         entry.update({"last_attempt_at":run["started_at"] if run else None,"last_success_at":success[0] if success else None,
                       "last_status":run["status"] if run else "never_checked"})
         entry.update({k:run[k] if run else None for k in ("items_seen","new_works","new_versions","changed_records","error")})
@@ -426,7 +556,8 @@ def export_data(db):
         # Explicit allowlist: never serialize arbitrary database tables or private records.
         keys = ("kind","title","title_en","url","summary","doi","arxiv_id","published_at","publication_date_basis",
                 "version","version_updated_at","method_tags","rule_score","selection_reason","evidence_scope","claims_status",
-                "authors","categories","prerelease","repository_created_at","date_note")
+                "authors","categories","prerelease","repository_created_at","date_note",
+                "journal","journal_id","issn","publisher","publication_status","summary_is_excerpt","abstract_available","source_fingerprint")
         item = {k:data.get(k) for k in keys}
         item.update({"id":work["id"],"first_seen_at":work["first_seen_at"],"last_seen_at":work["last_seen_at"],"content_changed_at":work["content_changed_at"]})
         item["domain_ids"] = [r[0] for r in db.execute("SELECT domain_id FROM work_domains WHERE work_id=? ORDER BY domain_id", (work["id"],))]

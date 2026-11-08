@@ -86,5 +86,85 @@
       "interaction"
     ],
     "domain_mapping_note": "经摘要核对，主题是面向人的触觉输出接口；不沿用规则分类中的机器人触觉感知、多模态融合或物理仿真标签。"
+  },
+  {
+    "id": "brief-scirobotics.adt2230",
+    "doi": "10.1126/scirobotics.adt2230",
+    "version": "published",
+    "source_fingerprint": "26de464984d3908b2add1ef553de696c8513bdf82e03b469e34908f22be6cbaf",
+    "type": "abstract_brief",
+    "title_zh": "BIOSENTER：软体肠镜怎样在狭窄通道里推进与转向",
+    "original_title": "Bioinspired soft enteroscopic robot for intestinal locomotion, steering, and intervention",
+    "summary": "研究把轴向伸缩的气动本体、可径向展开的首尾锚定结构和中央器械通道组合成软体肠镜。摘要报告体外与猪实验中的移动、活检和液体输送可行性；锚定结构利用剪纸套筒减少所需径向膨胀。这里的证据是原型与动物实验，不能直接推断人体临床疗效或全面安全性。",
+    "commentary": "继续阅读要区分体外管路、组织覆盖管路与活体猪的条件，并核查组织损伤评估、重复次数和与现有肠镜的对照。",
+    "why_selected": "正式期刊的近期工作，补充机构、感知或规划在真实系统中的证据，供进一步阅读全文。",
+    "reading_basis": "核读出版方向Crossref登记的完整作者摘要及出版日期；未核读付费全文、补充实验或运行代码。本文仅作摘要级整理。",
+    "evidence_scope": "abstract_and_metadata_only",
+    "claims_status": "author_claims_not_independently_reproduced",
+    "source_name": "Science Robotics",
+    "source_url": "https://doi.org/10.1126/scirobotics.adt2230",
+    "source_published_at": "2026-10-28",
+    "prepared_on": "2026-11-08",
+    "domain_ids": [
+      "embodiment",
+      "morphology_design",
+      "actuation",
+      "control",
+      "contact_control",
+      "evaluation",
+      "robot_safety"
+    ]
+  },
+  {
+    "id": "brief-scirobotics.aeh2947",
+    "doi": "10.1126/scirobotics.aeh2947",
+    "version": "published",
+    "source_fingerprint": "24fa7652214b9ae0189f072796ee55a824328857bd2b301d493564dd6ae3f0cb",
+    "type": "abstract_brief",
+    "title_zh": "毅力号机载规划：用实时资源状态调整火星任务",
+    "original_title": "The Mars 2020 OnBoard Planner: Increasing autonomy mission productivity of the Perseverance rover",
+    "summary": "OnBoard Planner在机载端用约束搜索动态调整活动安排，把实时资源状态用于加热时长、时间余量与机会任务。作者摘要报告两年多火星运行中的可自主安排活动总体增加10.5%，且没有延长地面操作安排。这个指标不是行驶成功率，也不是所有科学产出统一提高10.5%。",
+    "commentary": "值得继续检查可自主安排活动的定义、比较基线和资源约束，以及系统在状态预测错误时怎样保守降级。",
+    "why_selected": "正式期刊的近期工作，补充机构、感知或规划在真实系统中的证据，供进一步阅读全文。",
+    "reading_basis": "核读出版方向Crossref登记的完整作者摘要及出版日期；未核读付费全文、补充实验或运行代码。本文仅作摘要级整理。",
+    "evidence_scope": "abstract_and_metadata_only",
+    "claims_status": "author_claims_not_independently_reproduced",
+    "source_name": "Science Robotics",
+    "source_url": "https://doi.org/10.1126/scirobotics.aeh2947",
+    "source_published_at": "2026-10-28",
+    "prepared_on": "2026-11-08",
+    "domain_ids": [
+      "planning",
+      "task_decomposition",
+      "failure_recovery",
+      "evaluation",
+      "deployment_evidence"
+    ]
+  },
+  {
+    "id": "brief-s42256-026-01325-6",
+    "doi": "10.1038/s42256-026-01325-6",
+    "version": "published",
+    "source_fingerprint": "b4ae3d22c09d13ba142c490518e97702bd6ee70180a9f8c93d06e13d0869f5e8",
+    "type": "abstract_brief",
+    "title_zh": "大规模离子皮肤：传感单元增加以后，读出与带宽怎么办",
+    "original_title": "Large-scale iontronic skins with neural-hierarchical processing architecture",
+    "summary": "这项工作把触觉阵列与分层信号处理一起设计：位置采用频率编码并行传输，后端再汇聚压缩。摘要报告超过一万个单元、100帧每秒读出，以及机器人上的精细触觉和自保护演示。这里的“自保护”是特定刺激与响应的功能，不说明机器人具有人的主观痛觉或完整触觉能力。",
+    "commentary": "继续读方法时应核查密度、面积、帧率和带宽降低是否来自同一构型，以及标定、串扰、失效单元和端到端控制延迟。",
+    "why_selected": "正式期刊的近期工作，补充机构、感知或规划在真实系统中的证据，供进一步阅读全文。",
+    "reading_basis": "核读出版方向Crossref登记的完整作者摘要及出版日期；未核读付费全文、补充实验或运行代码。本文仅作摘要级整理。",
+    "evidence_scope": "abstract_and_metadata_only",
+    "claims_status": "author_claims_not_independently_reproduced",
+    "source_name": "Nature Machine Intelligence",
+    "source_url": "https://doi.org/10.1038/s42256-026-01325-6",
+    "source_published_at": "2026-10-16",
+    "prepared_on": "2026-11-08",
+    "domain_ids": [
+      "embodiment",
+      "tactile_sensors",
+      "sensor_calibration",
+      "perception",
+      "tactile_perception"
+    ]
   }
 ]

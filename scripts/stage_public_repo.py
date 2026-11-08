@@ -11,8 +11,8 @@ import public_state
 
 ROOT=Path(__file__).resolve().parents[1]
 FILES=[*("app/"+x for x in build_public.ASSETS),
-       "content/domains.json","content/reviews.json","content/abstract-briefs.json",
-       "pipeline/cli.py","pipeline/sources.json","pipeline/test_pipeline.py","pipeline/test_company.py","pipeline/README.md",
+       "content/domains.json","content/reviews.json","content/abstract-briefs.json","content/journals.json",
+       "pipeline/cli.py","pipeline/sources.json","pipeline/test_pipeline.py","pipeline/test_company.py","pipeline/test_journals.py","pipeline/README.md",
        "pipeline/aihot-source-template.json","核查/check_public_sources.py",
        "scripts/build_public.py","scripts/public_state.py","scripts/stage_public_repo.py",
        "scripts/test_cloud.py","scripts/DEPLOYMENT.md",".github/workflows/daily-public.yml"]

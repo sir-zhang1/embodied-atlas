@@ -45,6 +45,7 @@ def make_data(root, feed_path, cloud=False):
     data = {"framework":{key:framework.get(key,[]) for key in FRAMEWORK_KEYS}, "domains":domains,
             "reviews":read_json(root / "content/reviews.json", []),
             "briefs":read_json(root / "content/abstract-briefs.json", []),
+            "journals":read_json(root / "content/journals.json", {"journals":[]}),
             "feed":feed, "runtime":"static", "scheduled":False}
     if cloud:
         repository = os.environ.get("GITHUB_REPOSITORY", "")
