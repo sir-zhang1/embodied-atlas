@@ -19,8 +19,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 840,
-      "sha256": "17f6b144e2751c4711ad78826d1ad15a5c9c39704edddccb0fc2962ca93f1a1f"
+      "bytes": 1215,
+      "sha256": "dacbfab837cf4a68ff28dee854ed66cd84ad734546862560bc949888db4fc803"
     },
     {
       "path": "app/app.js",
@@ -104,8 +104,8 @@
     },
     {
       "path": "scripts/DEPLOYMENT.md",
-      "bytes": 7817,
-      "sha256": "c1c77aaa0ef463c07b924aaa1b7da804c3fd1aa56f85816d9dde2f4cd6f5da74"
+      "bytes": 8444,
+      "sha256": "78ed54d7a9cfddaa2957becbe47e0823e74920073b1ed64b71c58468cf7211c7"
     },
     {
       "path": "scripts/build_public.py",

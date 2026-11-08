@@ -25,6 +25,12 @@ python3 scripts/stage_public_repo.py --out /absolute/path/to/new-public-repo
 
 主线程可在上述独立包创建仓库并配置 Pages；此准备脚本自己不创建云资源、不推送或开启付费产品。
 
+## 当前运行入口
+
+个人仓库为 `sir-zhang1/embodied-atlas`，默认源码分支 `helm/site`，公共状态分支 `helm/public-state`。每日 07:17（UTC+8）、手动补跑和默认分支公开内容变更均可触发；状态分支提交不会再次触发采集。内容变更触发范围为 app、content、pipeline、scripts、方案与工作流文件。
+
+本机维护先执行 `gh auth switch --hostname github.com --user sir-zhang1`，只在独立公开目录提交。完成后可切回 `HELM-coder` 继续工作项目。账号切换不影响云端定时任务；云端使用仓库自己的临时任务令牌。
+
 ## 每轮实际流程
 
 `恢复公共状态 → 应用版本化公开编辑 → 联网采集 → 保存公共状态 → 导出公开JSON → 构建静态站 → Pages部署 → 标记来源健康状态 → 清理本次Pages artifact`。
